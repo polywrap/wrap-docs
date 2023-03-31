@@ -1,0 +1,16 @@
+- [ ] maybe instead of the loading icon, some text could pop up to explain what's happening?
+- [ ] copy-to-clipboard button
+- [ ] lazy: connect wallet
+- [ ] more examples (reference: https://docs.uniswap.org/sdk/v3/overview)
+- [ ] show resolution path from ENS (link->app.ens) -> IPFS (link->wrappers)
+- [ ] show imported types
+  - [ ] deps -> uris -> ...
+- [ ] support examples w/ multiple invocations (i.e. workflows)
+- [ ] reduce code duplication
+- [ ] cleanup code, ensure styling + layout is simple and done uniformly
+- [ ] sidebar items could be alphabetized
+- [ ] sidebar items sometimes wrap if they're too long, doesn't look great in all cases
+- [ ] show external imports (in schema view especially)
+- [ ] make the site generic, host at `docs.wraps.eth`
+- [ ] adding workflows to deployment artifacts -> integrate into docs.wraps
+- [ ] testing docs locally during dev time
