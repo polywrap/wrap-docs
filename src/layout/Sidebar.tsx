@@ -105,13 +105,10 @@ function Sidebar() {
   const functions = abi?.moduleType?.methods || [];
   const env = abi?.envType;
   const objects = abi?.objectTypes || [];
+  const importedObjects = abi?.importedObjectTypes || [];
   const enums = abi?.enumTypes || [];
-  const dependencies = [
-    ...(abi?.importedEnumTypes?.map((i) => i.uri) || []),
-    ...(abi?.importedEnvTypes?.map((i) => i.uri) || []),
-    ...(abi?.importedModuleTypes?.map((i) => i.uri) || []),
-    ...(abi?.importedObjectTypes?.map((i) => i.uri) || []),
-  ].filter((v, i, a) => a.indexOf(v) === i);
+  const importedEnums = abi?.importedEnumTypes || [];
+  const importedModules = abi?.importedModuleTypes || [];
 
   return (
     <SidebarContainer className="sidebar">
@@ -178,11 +175,35 @@ function Sidebar() {
           ))}
         </SidebarSection>
       )}
-      {dependencies && (
-        <SidebarSection name="Dependencies">
-          {dependencies.map((i) => (
-            <SidebarItem>
-              {i}
+      {importedObjects.length > 0 && (
+        <SidebarSection name="Import Objects">
+          {importedObjects.map((i) => (
+            <SidebarItem onClick={() =>
+              navigate("/import/object/" + i.type)
+            }>
+              {i.type}
+            </SidebarItem>
+          ))}
+        </SidebarSection>
+      )}
+      {importedEnums.length > 0 && (
+        <SidebarSection name="Import Enums">
+          {importedEnums.map((i) => (
+            <SidebarItem onClick={() =>
+              navigate("/import/enum/" + i.type)
+            }>
+              {i.type}
+            </SidebarItem>
+          ))}
+        </SidebarSection>
+      )}
+      {importedModules.length > 0 && (
+        <SidebarSection name="Import Modules">
+          {importedModules.map((i) => (
+            <SidebarItem onClick={() =>
+              navigate("/import/module/" + i.type)
+            }>
+              {i.type}
             </SidebarItem>
           ))}
         </SidebarSection>
