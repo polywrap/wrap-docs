@@ -1,54 +1,56 @@
+import { Box, BoxProps } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
 
-interface SidebarSection {
+interface SidebarSectionProps {
   name: string;
   children?: React.ReactNode;
   initOpen?: boolean;
   onClick?: React.MouseEventHandler;
 }
 
-const SectionHeading = styled.div`
-  margin-top: 20px;
-  margin-bottom: 10px;
-  border-bottom: ${props => props.theme.colors[50]};
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  cursor: pointer;
-  font-weight: 600;
-  &:hover {
-    border-bottom-style: dotted;
-  }
-`;
+const SectionHeading = ({ children, ...props }: BoxProps) => (
+  <Box
+    sx={{
+      borderRadius: 1,
+      cursor: "pointer",
+      fontWeight: 600,
+      py: 1,
+      px: 2,
+      "&:hover": {
+        bgcolor: "fg.50",
+      },
+    }}
+    {...props}
+  >
+    {children}
+  </Box>
+);
 
-const SectionContainer = styled.div`
-  margin-left: 15px;
-`;
-
-function SidebarSection(props: SidebarSection) {
+function SidebarSection(props: SidebarSectionProps) {
   const [open, setOpen] = React.useState(!!props.initOpen);
 
   if (!props.children) {
     return (
-      <SectionContainer>
-        <SectionHeading onClick={props.onClick}>
-          {props.name}
-        </SectionHeading>
-      </SectionContainer>
+      <Box>
+        <SectionHeading onClick={props.onClick}>{props.name}</SectionHeading>
+      </Box>
     );
   } else {
     return (
-      <SectionContainer>
-        <SectionHeading onClick={(e) => {
-          setOpen(!open);
-          if (props.onClick) {
-            props.onClick(e);
-          }
-        }}>
+      <Box>
+        <SectionHeading
+          onClick={(e) => {
+            setOpen(!open);
+            if (props.onClick) {
+              props.onClick(e);
+            }
+          }}
+        >
           {(open ? "- " : "+ ") + props.name}
         </SectionHeading>
         {open && props.children}
-      </SectionContainer>
+      </Box>
     );
   }
 }

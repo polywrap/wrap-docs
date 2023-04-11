@@ -22,7 +22,7 @@ const Title = styled.h1`
 `;
 
 const SchemaLink = styled.span`
-  color: ${props => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors.bg[50]};
   display: flex;
   align-items: center;
 
@@ -33,7 +33,7 @@ const SchemaLink = styled.span`
 `;
 
 const SchemaText = styled.h6`
-  color: ${props => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors.bg[50]};
   font-weight: 100;
 `;
 
@@ -58,7 +58,7 @@ const ArgumentName = styled.span`
 const ExampleList = styled.ul`
   list-style: none;
   padding-left: 16px;
-`
+`;
 
 const ExampleListItem = styled.li`
   cursor: pointer;
@@ -72,15 +72,15 @@ function FunctionDocs() {
   const client = usePolywrapClient();
   const { manifest, error, loading } = useWrapManifest({
     client,
-    uri: uniswapV3Uri
+    uri: uniswapV3Uri,
   });
   const { id } = useParams<"id">();
 
   if (loading) {
-    return (<Loader style={{ width: "100%", marginTop: "45px" }} />);
+    return <Loader style={{ width: "100%", marginTop: "45px" }} />;
   } else if (error) {
     console.error(error);
-    return (<div>{error.toString()}</div>);
+    return <div>{error.toString()}</div>;
   }
 
   // Find the function
@@ -89,7 +89,7 @@ function FunctionDocs() {
   if (!abi) {
     const message = `ABI not found.`;
     console.error(message);
-    return (<div>{message}</div>);
+    return <div>{message}</div>;
   }
 
   const methods = abi.moduleType?.methods || [];
@@ -98,7 +98,7 @@ function FunctionDocs() {
   if (!method) {
     const message = `Unable to find function "${id}".`;
     console.error(message);
-    return (<div>{message}</div>);
+    return <div>{message}</div>;
   }
 
   // Find any examples including this function
@@ -112,17 +112,13 @@ function FunctionDocs() {
         <Title>
           Function: <b>{method.name}</b>
         </Title>
-        <SchemaLink
-          onClick={() => navigate("/schema")}
-        >
+        <SchemaLink onClick={() => navigate("/schema")}>
           <SchemaText>schema</SchemaText>
           <UnfoldMore />
         </SchemaLink>
       </Header>
       {method?.comment && (
-        <FunctionDescription>
-          {method.comment}
-        </FunctionDescription>
+        <FunctionDescription>{method.comment}</FunctionDescription>
       )}
       <RenderSchema
         methods={[method]}
@@ -136,31 +132,25 @@ function FunctionDocs() {
       />
       {method?.arguments?.length && (
         <>
-          <SectionTitle>
-          Arguments
-          </SectionTitle>
+          <SectionTitle>Arguments</SectionTitle>
           <ArgumentList>
-          {method.arguments.map((argument) => {
-            const required = argument.required;
-            return (
-              <li>
-                <ArgumentName>
-                  {argument.name}
-                </ArgumentName>
-                {!required && " (optional)"}
-                {" - "}
-                {argument.comment || "no comment."}
-              </li>
-            );
-          })}
+            {method.arguments.map((argument) => {
+              const required = argument.required;
+              return (
+                <li>
+                  <ArgumentName>{argument.name}</ArgumentName>
+                  {!required && " (optional)"}
+                  {" - "}
+                  {argument.comment || "no comment."}
+                </li>
+              );
+            })}
           </ArgumentList>
         </>
       )}
       {exampleRefs.length > 0 && (
         <>
-          <SectionTitle>
-            Examples
-          </SectionTitle>
+          <SectionTitle>Examples</SectionTitle>
           <ExampleList>
             {exampleRefs.map((example) => (
               <ExampleListItem onClick={() => navigate("/example/" + example)}>

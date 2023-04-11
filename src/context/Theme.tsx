@@ -1,15 +1,14 @@
-import { styles } from "../styles";
 import { components } from "../styles/components";
 import { themes } from "../styles/palette";
 import "../styles/globals.css";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
-import { createContext, ReactNode, useMemo, useState } from "react";
+import { createContext, useMemo, useState } from "react";
 
-interface ThemeWrapperProps {
-  children: ReactNode;
+interface ThemeWrapper {
+  children: any;
 }
 
-export default function ThemeWrapper({ children }: ThemeWrapperProps) {
+export default function ThemeWrapper({ children }: ThemeWrapper) {
   const [mode, setMode] = useState<"light" | "dark">("dark");
 
   const ThemeContext = createContext({ toggleTheme: () => {} });
@@ -26,7 +25,6 @@ export default function ThemeWrapper({ children }: ThemeWrapperProps) {
   const theme = useMemo(
     () =>
       createTheme({
-        ...styles,
         ...components,
         palette: {
           mode,

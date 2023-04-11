@@ -22,7 +22,7 @@ const Title = styled.h1`
 `;
 
 const SchemaLink = styled.span`
-  color: ${props => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors.bg[50]};
   display: flex;
   align-items: center;
 
@@ -33,7 +33,7 @@ const SchemaLink = styled.span`
 `;
 
 const SchemaText = styled.h6`
-  color: ${props => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors.bg[50]};
   font-weight: 100;
 `;
 
@@ -49,15 +49,15 @@ function ImportModuleDocs() {
   const client = usePolywrapClient();
   const { manifest, error, loading } = useWrapManifest({
     client,
-    uri: uniswapV3Uri
+    uri: uniswapV3Uri,
   });
   const { id } = useParams<"id">();
 
   if (loading) {
-    return (<Loader style={{ width: "100%", marginTop: "45px" }} />);
+    return <Loader style={{ width: "100%", marginTop: "45px" }} />;
   } else if (error) {
     console.error(error);
-    return (<div>{error.toString()}</div>);
+    return <div>{error.toString()}</div>;
   }
 
   const abi = manifest?.abi;
@@ -65,7 +65,7 @@ function ImportModuleDocs() {
   if (!abi) {
     const message = `ABI not found.`;
     console.error(message);
-    return (<div>{message}</div>);
+    return <div>{message}</div>;
   }
 
   // Find the module
@@ -75,7 +75,7 @@ function ImportModuleDocs() {
   if (!module) {
     const message = `Unable to find module "${id}".`;
     console.error(message);
-    return (<div>{message}</div>);
+    return <div>{message}</div>;
   }
 
   return (
@@ -84,18 +84,12 @@ function ImportModuleDocs() {
         <Title>
           Module: <b>{module.type}</b>
         </Title>
-        <SchemaLink
-          onClick={() => navigate("/schema")}
-        >
+        <SchemaLink onClick={() => navigate("/schema")}>
           <SchemaText>schema</SchemaText>
           <UnfoldMore />
         </SchemaLink>
       </Header>
-      {module?.comment && (
-        <Description>
-          {module.comment}
-        </Description>
-      )}
+      {module?.comment && <Description>{module.comment}</Description>}
       <RenderSchema
         importedModules={[module]}
         onTypeNameClick={(name) => {
@@ -106,9 +100,7 @@ function ImportModuleDocs() {
           }
         }}
       />
-      <SectionTitle>
-      URI
-      </SectionTitle>
+      <SectionTitle>URI</SectionTitle>
       {module.uri}
     </>
   );

@@ -1,6 +1,4 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
-import styled from "styled-components";
 
 import Readme from "../pages/Readme";
 import Schema from "../pages/Schema";
@@ -10,32 +8,32 @@ import ObjectDocs from "../pages/ObjectDocs";
 import EnumDocs from "../pages/EnumDocs";
 import ImportModuleDocs from "../pages/ImportModuleDocs";
 import NoMatch from "../pages/NoMatch";
-
-const Main = styled.main`
-  padding-bottom: 50px;
-  position: relative;
-  flex-grow: 1;
-  padding: 10px 15px 40px 45px;
-  min-width: 0;
-  display: block;
-`
+import { Box } from "@mui/material";
+import Header from "./Header";
+import { SIDEBAR_WIDTH } from "./Sidebar";
 
 function Body() {
   return (
-    <Main>
-      <Routes>
-        <Route path="/" element={<Readme />} />
-        <Route path="/schema" element={<Schema />} />
-        <Route path="/example/:id" element={<Example />} />
-        <Route path="/function/:id" element={<FunctionDocs />} />
-        <Route path="/object/:id" element={<ObjectDocs />} />
-        <Route path="/import/object/:id" element={<ObjectDocs import />} />
-        <Route path="/enum/:id" element={<EnumDocs />} />
-        <Route path="/import/enum/:id" element={<EnumDocs import />} />
-        <Route path="/import/module/:id" element={<ImportModuleDocs />} />
-        <Route path="*" element={<NoMatch />} />
-      </Routes>
-    </Main>
+    <Box sx={{ ml: SIDEBAR_WIDTH }}>
+      <Header />
+      <Box
+        component="main"
+        sx={{ position: "relative", px: [4, 6, 8], pt: 14 }}
+      >
+        <Routes>
+          <Route path="/" element={<Readme />} />
+          <Route path="/schema" element={<Schema />} />
+          <Route path="/example/:id" element={<Example />} />
+          <Route path="/function/:id" element={<FunctionDocs />} />
+          <Route path="/object/:id" element={<ObjectDocs />} />
+          <Route path="/import/object/:id" element={<ObjectDocs import />} />
+          <Route path="/enum/:id" element={<EnumDocs />} />
+          <Route path="/import/enum/:id" element={<EnumDocs import />} />
+          <Route path="/import/module/:id" element={<ImportModuleDocs />} />
+          <Route path="*" element={<NoMatch />} />
+        </Routes>
+      </Box>
+    </Box>
   );
 }
 

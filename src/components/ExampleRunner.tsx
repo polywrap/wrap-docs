@@ -1,20 +1,21 @@
-import React from 'react';
+import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { PlayArrow, Settings, ManageSearch } from "@mui/icons-material";
 import { InvokeResult, PolywrapClient } from "@polywrap/client-js";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { irBlack as syntax } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { irBlack as syntax } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import Loader from "./Loader";
 import Spinner from "./Spinner";
 import Button from "./Button";
 import Toggle from "./Toggle";
 import Dropdown from "./Dropdown";
-import MultiSelect from './MultiSelect';
-import { getInvokeSnippet } from '../utils/getInvokeSnippet';
-import { InvokeLanguage, invokeLanguages } from '../utils/InvokeLanguage';
+import MultiSelect from "./MultiSelect";
+import { getInvokeSnippet } from "../utils/getInvokeSnippet";
+import { InvokeLanguage, invokeLanguages } from "../utils/InvokeLanguage";
 import { Example } from "../constants";
+import { Box, Typography } from "@mui/material";
 
 const Header = styled.div`
   display: flex;
@@ -22,19 +23,8 @@ const Header = styled.div`
   justify-content: space-between;
 `;
 
-const DocsLink = styled.span`
-  color: ${props => props.theme.colors[50]};
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-`;
-
 const DocsText = styled.h6`
-  color: ${props => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors.bg[50]};
   font-weight: 100;
 `;
 
@@ -61,11 +51,11 @@ const SettingsMenu = styled.div`
   z-index: 1;
   display: grid;
   flex-direction: column;
-  background-color: ${props => props.theme.colors[900]};
+  background-color: ${(props) => props.theme.colors[900]};
   border-radius: 5px;
   padding: 5px;
   margin: 5px 0px;
-  background-color: ${props => props.theme.colors[50]}3b;
+  background-color: ${(props) => props.theme.colors.bg[50]}3b;
 `;
 
 const RunArrow = styled(PlayArrow)`
@@ -83,7 +73,7 @@ const SnippetContainer = styled.div`
 
 const SnippetText = styled.div`
   max-height: 50vh;
-  font-size: 0.90rem;
+  font-size: 0.9rem;
   overflow: auto;
 `;
 
@@ -106,9 +96,9 @@ const ResultText = styled.div`
 `;
 
 function ExampleRunner(props: {
-  id: string,
-  example: Example,
-  client: PolywrapClient
+  id: string;
+  example: Example;
+  client: PolywrapClient;
 }) {
   const navigate = useNavigate();
   const [result, setResult] = React.useState<
@@ -117,9 +107,8 @@ function ExampleRunner(props: {
   const [waiting, setWaiting] = React.useState(false);
   const [inspectArgs, setInspectArgs] = React.useState(false);
   const [codegen, setCodegen] = React.useState(false);
-  const [selectedLanguage, setSelectedLanguage] = React.useState<
-    InvokeLanguage
-  >("TypeScript");
+  const [selectedLanguage, setSelectedLanguage] =
+    React.useState<InvokeLanguage>("TypeScript");
 
   const { name, description, uri, method, args } = props.example;
   const client = props.client;
@@ -142,114 +131,131 @@ function ExampleRunner(props: {
     result[id] = await client.invoke({
       uri,
       method,
-      args
+      args,
     });
     setResult(result);
     setWaiting(false);
-  }
+  };
 
   const toggleStyle: React.CSSProperties = {
     height: "32px",
     width: "fit-content",
     justifySelf: "end",
-    marginBottom: "5px"
+    marginBottom: "5px",
   };
 
   return (
     <>
-    <Header>
-      <Title>
-        <b>{name}</b>
-      </Title>
-      <DocsLink
-        onClick={() => navigate("/function/" + method)}
-      >
-        <DocsText>docs</DocsText>
-        <ManageSearch />
-      </DocsLink>
-    </Header>
-    <Description>{description}</Description>
-    <SnippetContainer>
-      <Controls>
-        <Button
-          style={{
-            height: "28px",
-            marginLeft: "10px",
+      <Header>
+        <Title>
+          <b>{name}</b>
+        </Title>
+        <Box
+          component="span"
+          onClick={() => navigate("/function/" + method)}
+          sx={{
+            alignItems: "center",
+            color: "bg.50",
+            display: "flex",
+            "&:hover": { textDecoration: "underline", cursor: "pointer" },
           }}
-          onClick={run}
         >
-          <text style={{
-            marginRight: "5px"
-          }}>Run</text>
-          {waiting ?
-            <Spinner style={{
-              height: "9px",
-              width: "9px"
-            }}/> :
-            <RunArrow />
-          }
-        </Button>
-        <Dropdown
-          inner={(
-            <Settings />
-          )}
-        >
-          <SettingsMenu>
-            <Toggle
-              style={toggleStyle}
-              position={"right"}
-              initValue={inspectArgs}
-              onToggle={(toggle) => setInspectArgs(toggle)}
+          <Typography variant="h6" sx={{ color: "bg.50", fontWeight: 100 }}>
+            docs
+          </Typography>
+          <ManageSearch />
+        </Box>
+      </Header>
+      <Description>{description}</Description>
+      <SnippetContainer>
+        <Controls>
+          <Button
+            style={{
+              height: "28px",
+              marginLeft: "10px",
+            }}
+            onClick={run}
+          >
+            <text
+              style={{
+                marginRight: "5px",
+              }}
             >
-              Args
-            </Toggle>
-            <Toggle
-              style={toggleStyle}
-              position={"right"}
-              initValue={codegen}
-              onToggle={(toggle) => setCodegen(toggle)}
-            >
-              Codegen
-            </Toggle>
-            <MultiSelect
-              title={selectedLanguage}
-              options={invokeLanguages.flat()}
-              onOptionSelect={(option) =>
-                setSelectedLanguage(option as InvokeLanguage)
-              }
-              position={"right"}
-            />
-          </SettingsMenu>
-        </Dropdown>
-      </Controls>
-      <SnippetText>
-        <SyntaxHighlighter
-          showLineNumbers={false}
-          language={selectedLanguage.toLowerCase()}
-          style={syntax}
-        >
-          {invokeSnippet}
-        </SyntaxHighlighter>
-      </SnippetText>
-    </SnippetContainer>
-    {(waiting || result[id] !== undefined) && (
-      <>
-        <ResultTitle>Result</ResultTitle>
-        {waiting ?
-          <Loader /> :
-          <ResultContainer>
-            <ResultText>
-              <SyntaxHighlighter showLineNumbers={false} language="json" style={syntax}>
-                {
-                  JSON.stringify(result[id], null, 2)
-                    .replace(/"([^"]+)":/g, '$1:')
+              Run
+            </text>
+            {waiting ? (
+              <Spinner
+                style={{
+                  height: "9px",
+                  width: "9px",
+                }}
+              />
+            ) : (
+              <RunArrow />
+            )}
+          </Button>
+          <Dropdown inner={<Settings />}>
+            <SettingsMenu>
+              <Toggle
+                style={toggleStyle}
+                position={"right"}
+                initValue={inspectArgs}
+                onToggle={(toggle) => setInspectArgs(toggle)}
+              >
+                Args
+              </Toggle>
+              <Toggle
+                style={toggleStyle}
+                position={"right"}
+                initValue={codegen}
+                onToggle={(toggle) => setCodegen(toggle)}
+              >
+                Codegen
+              </Toggle>
+              <MultiSelect
+                title={selectedLanguage}
+                options={invokeLanguages.flat()}
+                onOptionSelect={(option) =>
+                  setSelectedLanguage(option as InvokeLanguage)
                 }
-              </SyntaxHighlighter>
-            </ResultText>
-          </ResultContainer>
-        }
-      </>
-    )}
+                position={"right"}
+              />
+            </SettingsMenu>
+          </Dropdown>
+        </Controls>
+        <SnippetText>
+          <SyntaxHighlighter
+            showLineNumbers={false}
+            language={selectedLanguage.toLowerCase()}
+            style={syntax}
+          >
+            {invokeSnippet}
+          </SyntaxHighlighter>
+        </SnippetText>
+      </SnippetContainer>
+      {(waiting || result[id] !== undefined) && (
+        <>
+          <ResultTitle>Result</ResultTitle>
+          {waiting ? (
+            <Loader />
+          ) : (
+            <ResultContainer>
+              <ResultText>
+                <SyntaxHighlighter
+                  showLineNumbers={false}
+                  language="json"
+                  style={syntax}
+                >
+                  {JSON.stringify(result[id], null, 2).replace(
+                    /"([^"]+)":/g,
+                    "$1:"
+                  )}
+                </SyntaxHighlighter>
+              </ResultText>
+            </ResultContainer>
+          )}
+        </>
+      )}
     </>
   );
 }
