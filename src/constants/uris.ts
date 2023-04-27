@@ -1,1 +1,1 @@
-export const uniswapV3Uri = "wrap://ens/uniswap.wraps.eth:v3";
+export const uniswapV3Uri = "wrap://http/http://localhost:3000/sample";
