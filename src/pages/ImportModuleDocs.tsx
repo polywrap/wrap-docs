@@ -1,14 +1,10 @@
-import React from "react";
 import styled from "styled-components";
 import { UnfoldMore } from "@mui/icons-material";
 import { useParams, useNavigate } from "react-router-dom";
-import { usePolywrapClient } from "@polywrap/react";
 
-import { useWrapManifest } from "../hooks/useWrapManifest";
-import { uniswapV3Uri } from "../constants";
 import RenderSchema from "../components/RenderSchema";
-import Loader from "../components/Loader";
 import { getTypeNameRoute } from "../utils/getTypeNameRoute";
+import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
 
 const Header = styled.div`
   display: flex;
@@ -44,21 +40,14 @@ const Description = styled.h2`
 
 const SectionTitle = styled.h3``;
 
-function ImportModuleDocs() {
-  const navigate = useNavigate();
-  const client = usePolywrapClient();
-  const { manifest, error, loading } = useWrapManifest({
-    client,
-    uri: uniswapV3Uri
-  });
-  const { id } = useParams<"id">();
+type ImportModuleDocsProps = {
+  manifest: WrapManifest;
+};
 
-  if (loading) {
-    return (<Loader style={{ width: "100%", marginTop: "45px" }} />);
-  } else if (error) {
-    console.error(error);
-    return (<div>{error.toString()}</div>);
-  }
+function ImportModuleDocs(props: ImportModuleDocsProps) {
+  const navigate = useNavigate();
+  const { manifest } = props;
+  const { id } = useParams<"id">();
 
   const abi = manifest?.abi;
 

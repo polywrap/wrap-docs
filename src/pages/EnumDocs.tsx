@@ -1,17 +1,13 @@
-import React from "react";
 import styled from "styled-components";
 import { UnfoldMore } from "@mui/icons-material";
 import { useParams, useNavigate } from "react-router-dom";
-import { usePolywrapClient } from "@polywrap/react";
 import { ImportedEnumDefinition } from "@polywrap/wrap-manifest-types-js";
 
-import { useWrapManifest } from "../hooks/useWrapManifest";
-import { uniswapV3Uri } from "../constants";
 import RenderSchema from "../components/RenderSchema";
 import ReferenceSection from "../components/ReferenceSection";
-import Loader from "../components/Loader";
 import { getTypeNameRoute } from "../utils/getTypeNameRoute";
 import { getTypeRefRoutes } from "../utils/getTypeRefRoutes";
+import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
 
 const Header = styled.div`
   display: flex;
@@ -49,23 +45,14 @@ const Description = styled.h2`
 
 interface EnumDocsProps {
   import?: boolean;
+  manifest: WrapManifest
 }
 
 function EnumDocs(props: EnumDocsProps) {
   const navigate = useNavigate();
-  const client = usePolywrapClient();
-  const { manifest, error, loading } = useWrapManifest({
-    client,
-    uri: uniswapV3Uri
-  });
-  const { id } = useParams<"id">();
+  const { manifest } = props;
 
-  if (loading) {
-    return (<Loader style={{ width: "100%", marginTop: "45px" }} />);
-  } else if (error) {
-    console.error(error);
-    return (<div>{error.toString()}</div>);
-  }
+  const { id } = useParams<"id">();
 
   // Find the function
   const abi = manifest?.abi;

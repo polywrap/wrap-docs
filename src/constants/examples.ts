@@ -1,4 +1,4 @@
-import { uniswapV3Uri } from "./uris";
+import { wrapperUri } from "./uris";
 import WETH from "./inputs/WETH.json"
 import USDC from "./inputs/USDC.json"
 import pool from "./inputs/pool.json"
@@ -21,7 +21,7 @@ export const examples: Example[] = [
   {
     name: "Get Pool Address",
     description: "Each Uniswap V3 Pool is uniquely identified by 3 characteristics: token-in, token-out, and fee.",
-    uri: uniswapV3Uri,
+    uri: wrapperUri,
     method: "getPoolAddress",
     args: {
       tokenA: WETH,
@@ -32,7 +32,7 @@ export const examples: Example[] = [
   {
     name: "Fetch Pool Data",
     description: "A Uniswap V3 Pool's on-chain state can be fetched using the pools tokens and fee, or with its address.",
-    uri: uniswapV3Uri,
+    uri: wrapperUri,
     method: "fetchPoolFromTokens",
     args: {
       tokenA: WETH,
@@ -44,7 +44,7 @@ export const examples: Example[] = [
   {
     name: "Create a Route",
     description: "Using one or more Pools, we can create a Route to define the path of a Trade.",
-    uri: uniswapV3Uri,
+    uri: wrapperUri,
     method: "createRoute",
     args: {
       pools: [
@@ -57,7 +57,7 @@ export const examples: Example[] = [
   {
     name: "Get Quote Calldata",
     description: "To obtain a trade quote, we can use a Route to construct calldata for Uniswap's Quoter contract",
-    uri: uniswapV3Uri,
+    uri: wrapperUri,
     method: "quoteCallParameters",
     args: {
       route: route,
@@ -87,7 +87,7 @@ export const examples: Example[] = [
   {
     name: "Create a Trade",
     description: "We can create a Trade with the quote data returned by the Quoter contract",
-    uri: uniswapV3Uri,
+    uri: wrapperUri,
     method: "createUncheckedTrade",
     args: {
       swap: {
@@ -107,7 +107,7 @@ export const examples: Example[] = [
   {
     name: "Get Swap Calldata",
     description: "We can generate calldata to execute the Trade on chain.",
-    uri: uniswapV3Uri,
+    uri: wrapperUri,
     method: "swapCallParameters",
     args: {
       trades: [ trade ],

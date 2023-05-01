@@ -9,7 +9,7 @@ import {
 import styled from 'styled-components';
 
 import { ThemeContext } from "../context/ThemeProvider";
-import { uniswapV3Uri } from "../constants";
+import { wrapperUri } from "../constants";
 import Dropdown from "../components/Dropdown";
 import PolywrapLogo from '../components/PolywrapLogo';
 import MultiSelect from '../components/MultiSelect';
@@ -125,7 +125,7 @@ function Header() {
     return () => window.removeEventListener("resize", updateMedia);
   });
 
-  const uri = uniswapV3Uri;
+  const uri = wrapperUri;
 
   return (
     <HeaderContainer>

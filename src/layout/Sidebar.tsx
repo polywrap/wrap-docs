@@ -1,14 +1,11 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { usePolywrapClient } from "@polywrap/react";
 
 import { HEIGHT as HEADER_HEIGHT } from "./Header";
-import { uniswapV3Uri, examples } from "../constants";
-import Loader from "../components/Loader";
+import { examples } from "../constants";
 import SidebarSection from "../components/SidebarSection";
 import UniswapLogo from "../images/uniswap-logo.svg";
-import { useWrapManifest } from "../hooks/useWrapManifest";
+import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
 
 const SidebarContainer = styled.nav`
   top: ${HEADER_HEIGHT};
@@ -66,40 +63,13 @@ const SidebarItem = styled.div`
   }
 `;
 
-function Sidebar() {
-  const navigate = useNavigate();
-  const client = usePolywrapClient();
-  const { manifest, error, loading } = useWrapManifest({
-    client,
-    uri: uniswapV3Uri
-  });
+type SidebarProps = {
+  manifest: WrapManifest;
+};
 
-  if (loading) {
-    return (
-      <SidebarContainer className="sidebar">
-        <LoadingContainer>
-          <Loader />
-          <LoadingText>Loading Wrap...</LoadingText>
-        </LoadingContainer>
-      </SidebarContainer>
-    );
-  } else if (error) {
-    // TODO: send user to resolution error page
-    console.error(error);
-    return (
-      <SidebarContainer className="sidebar">
-        <div>ERROR</div>
-      </SidebarContainer>
-    );
-  } else if (!manifest) {
-    // This should never happen
-    console.error("This should never happen, manifest & error are both undefined.");
-    return (
-      <SidebarContainer className="sidebar">
-        <div>ERROR</div>
-      </SidebarContainer>
-    );
-  }
+function Sidebar(props: SidebarProps) {
+  const navigate = useNavigate();
+  const { manifest } = props;
 
   const abi = manifest?.abi;
   const functions = abi?.moduleType?.methods || [];

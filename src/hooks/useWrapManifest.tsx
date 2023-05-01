@@ -1,6 +1,5 @@
 import React from "react";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
-import { usePolywrapClient } from "@polywrap/react";
 import { PolywrapClient, WrapError } from "@polywrap/client-js";
 
 import { useStateReducer } from "./useStateReducer";

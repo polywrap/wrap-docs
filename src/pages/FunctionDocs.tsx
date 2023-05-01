@@ -1,14 +1,11 @@
-import React from "react";
 import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";
 import { Launch, UnfoldMore } from "@mui/icons-material";
-import { usePolywrapClient } from "@polywrap/react";
 
-import { useWrapManifest } from "../hooks/useWrapManifest";
-import { uniswapV3Uri, examples } from "../constants";
+import { examples } from "../constants";
 import RenderSchema from "../components/RenderSchema";
-import Loader from "../components/Loader";
 import { getTypeNameRoute } from "../utils/getTypeNameRoute";
+import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
 
 const Header = styled.div`
   display: flex;
@@ -67,21 +64,14 @@ const ExampleListItem = styled.li`
   }
 `;
 
-function FunctionDocs() {
-  const navigate = useNavigate();
-  const client = usePolywrapClient();
-  const { manifest, error, loading } = useWrapManifest({
-    client,
-    uri: uniswapV3Uri
-  });
-  const { id } = useParams<"id">();
+type FunctionDocsProps = {
+  manifest: WrapManifest;
+};
 
-  if (loading) {
-    return (<Loader style={{ width: "100%", marginTop: "45px" }} />);
-  } else if (error) {
-    console.error(error);
-    return (<div>{error.toString()}</div>);
-  }
+function FunctionDocs(props: FunctionDocsProps) {
+  const navigate = useNavigate();
+  const { manifest } = props;
+  const { id } = useParams<"id">();
 
   // Find the function
   const abi = manifest?.abi;
