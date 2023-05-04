@@ -37,7 +37,7 @@ export function useDocsManifest(
     const execute = async () => {
       dispatch({ loading: true });
       const docsManifestResult = await client.getFile(props.uri, {
-        path: "polywrap.docs.json",
+        path: "docs/polywrap.docs.json",
         encoding: "utf-8",
       });
 

@@ -1,45 +1,102 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import ReactMarkdown from "react-markdown";
 import remarkExternalLinks from "remark-external-links";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { irBlack as syntax } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { irBlack as syntax } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
-import { readme } from "../constants/readme";
 import { CodeProps } from "react-markdown/lib/ast-to-react";
+import { usePolywrapClient } from "@polywrap/react";
+import { useParams } from "react-router-dom";
+import { wrapperUri } from "../constants";
+import { WrapError } from "@polywrap/client-js";
+import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
 
 const Markdown = styled(ReactMarkdown)`
-a {
-  color: ${props => props.theme.colors[100]};
-}
+  a {
+    color: ${(props) => props.theme.colors[100]};
+  }
 
-a:visited {
-  color: ${props => props.theme.colors[300]};
-}
+  a:visited {
+    color: ${(props) => props.theme.colors[300]};
+  }
 `;
 
-function Readme() {
-  return (
-    <Markdown
-      remarkPlugins={[remarkExternalLinks]}
-      components={{
-        code: (props: CodeProps) => {
-          const language =
-            props.lang ||
-            props.className?.replace("language-", "") ||
-            "";
+type ReadmeState = {
+  loading: boolean;
+  error?: WrapError;
+  markdown?: string;
+};
 
-          return (
-            <SyntaxHighlighter language={language} style={syntax}>
-              {props.children as unknown as string[]}
-            </SyntaxHighlighter>
-          );
+const INITIAL_README_STATE: ReadmeState = {
+  loading: true,
+};
+
+type ReadmeProps = {
+  docsManifest?: DocsManifest;
+};
+
+function Readme(props: ReadmeProps) {
+  const { docsManifest } = props;
+  let { slug } = useParams<"slug">();
+
+  const client = usePolywrapClient();
+  const [readme, setReadme] = useState(INITIAL_README_STATE);
+
+  if (!slug) {
+    slug = props.docsManifest?.homePage;
+  }
+
+  useEffect(() => {
+    const exec = async () => {
+      if (!slug) {
+        return;
+      }
+  
+      if (docsManifest?.pages?.[slug]) {
+        const page = docsManifest?.pages?.[slug];
+
+        const pageContentsResult = await client.getFile(wrapperUri, {
+          path: `docs/${page.path}`,
+          encoding: "utf-8",
+        });
+
+        if (pageContentsResult.ok) {
+          setReadme({ loading: false, markdown: pageContentsResult.value.toString() });
+        } else {
+          setReadme({ loading: false, error: pageContentsResult.error });
         }
-      }}
-    >
-      {readme}
-    </Markdown>
-  );
+      }
+    };
+
+    exec();
+  }, [slug]);
+
+  if (readme.loading) {
+    return <></>;
+  } else if (!readme.markdown) {
+    return <></>;
+  } else {
+    return (
+      <Markdown
+        remarkPlugins={[remarkExternalLinks]}
+        components={{
+          code: (props: CodeProps) => {
+            const language =
+              props.lang || props.className?.replace("language-", "") || "";
+
+            return (
+              <SyntaxHighlighter language={language} style={syntax}>
+                {props.children as unknown as string[]}
+              </SyntaxHighlighter>
+            );
+          },
+        }}
+      >
+        {readme.markdown}
+      </Markdown>
+    );
+  }
 }
 
 export default Readme;

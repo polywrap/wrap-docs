@@ -11,6 +11,7 @@ import ObjectDocs from "../pages/ObjectDocs";
 import EnumDocs from "../pages/EnumDocs";
 import ImportModuleDocs from "../pages/ImportModuleDocs";
 import NoMatch from "../pages/NoMatch";
+import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
 
 const Main = styled.main`
   padding-bottom: 50px;
@@ -23,15 +24,17 @@ const Main = styled.main`
 
 type BodyProps = {
   manifest: WrapManifest;
+  docsManifest?: DocsManifest;
 };
 
 function Body(props: BodyProps) {
-  const { manifest } = props;
+  const { manifest, docsManifest } = props;
 
   return (
     <Main>
       <Routes>
-        <Route path="/" element={<Readme />} />
+        <Route path="/" element={<Readme {...{ docsManifest }} />} />
+        <Route path="/readme/:slug" element={<Readme {...{ docsManifest }} />} />
         <Route path="/schema" element={<Schema {...{ manifest }} />} />
         <Route path="/example/:id" element={<Example />} />
         <Route path="/function/:id" element={<FunctionDocs {...{ manifest }} />} />

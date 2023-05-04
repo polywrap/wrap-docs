@@ -6,6 +6,7 @@ import { useWrapManifest } from "../hooks/useWrapManifest";
 import { usePolywrapClient } from "@polywrap/react";
 import { wrapperUri } from "../constants";
 import Loader from "../components/Loader";
+import { useDocsManifest } from "../hooks/useDocsManifest";
 
 const AppBody = styled.div`
   width: unset !important;
@@ -22,7 +23,12 @@ function AppContainer() {
     uri: wrapperUri,
   });
 
-  if (loading) {
+  const {manifest: docsManifest, error: docsError, loading: docsLoading} = useDocsManifest({
+    client,
+    uri: wrapperUri,
+  });
+
+  if (loading || docsLoading) {
     return (
       <>
         <Header />
@@ -41,8 +47,8 @@ function AppContainer() {
     <>
       <Header />
       <AppBody>
-        <Sidebar {...{ manifest }} />
-        <Body {...{ manifest }}/>
+        <Sidebar {...{ manifest, docsManifest }} />
+        <Body {...{ manifest, docsManifest }} />
       </AppBody>
     </>
   );

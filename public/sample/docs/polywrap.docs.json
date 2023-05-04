@@ -1,1 +1,1 @@
-{"format":"0.1.0","title":"A test wrap docs","logo":"logo..png","pages":[{"title":"First page","path":"pages/first.md"},{"title":"Second page","path":"pages/second.md"}]}
+{"format":"0.1.0","title":"A test wrap docs","homePage":"second-page","logo":"logo..png","pages":{"home":{"title":"Home page","path":"pages/first.md"},"second-page":{"title":"Second page","path":"pages/second.md"}}}
