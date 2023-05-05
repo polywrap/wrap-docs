@@ -111,7 +111,7 @@ const ErrorText = styled.div`
 `;
 
 type ExampleStepWithResult = {
-  example: ExampleStep;
+  step: ExampleStep;
   result?: InvokeResult;
 };
 
@@ -120,15 +120,12 @@ function ExampleRunner(props: {
   client: PolywrapClient;
 }) {
   const { steps, client } = props;
-  const [lastResult, setLastResult] = useState<InvokeResult | undefined>(
-    undefined
-  );
   const firstStep = steps[0];
 
-  const getInitialState = () => {
+  const getInitialState = (): ExampleStepWithResult[] => {
     return [
       {
-        example: {
+        step: {
           args: firstStep.args,
           description: firstStep.description,
           method: firstStep.method,
@@ -137,31 +134,24 @@ function ExampleRunner(props: {
       },
     ];
   };
-  const [examplesWithResults, setExamplesWithResults] = useState<
+  const [exampleStepsWithResults, setExampleStepsWithResults] = useState<
     ExampleStepWithResult[]
   >(getInitialState());
 
   // Reset component when steps change
   useEffect(() => {
-    setLastResult(undefined);
-    setExamplesWithResults(getInitialState());
+    setExampleStepsWithResults(getInitialState());
   }, [steps]);
 
   const onExampleResult = (result: InvokeResult, index: number) => {
-    setLastResult(result);
-
     if (result.ok) {
-      const ewr = [...examplesWithResults];
+      const ewr = [...exampleStepsWithResults];
       ewr[index].result = result;
-
-      const results = ewr.map(
-        (x) => x.result ?? ({ ok: false } as InvokeResult)
-      );
 
       // If this is the latest result and is not the last one expected
       if (index === ewr.length - 1 && index < steps.length - 1) {
         ewr.push({
-          example: {
+          step: {
             args: steps[index + 1].args,
             description: steps[index + 1].description,
             method: steps[index + 1].method,
@@ -172,17 +162,17 @@ function ExampleRunner(props: {
         console.log("Nope");
       }
 
-      setExamplesWithResults(ewr);
+      setExampleStepsWithResults(ewr);
     }
   };
 
   return (
     <>
-      {examplesWithResults.map((ewr, ewrIndex) => (
+      {exampleStepsWithResults.map((ewr, ewrIndex) => (
         <ExampleStepRunner
           key={ewrIndex}
           client={client}
-          step={ewr.example}
+          step={ewr.step}
           onResult={(result) => {
             onExampleResult(result, ewrIndex);
           }}
