@@ -36,7 +36,7 @@ function Body(props: BodyProps) {
         <Route path="/" element={<Readme {...{ docsManifest }} />} />
         <Route path="/readme/:slug" element={<Readme {...{ docsManifest }} />} />
         <Route path="/schema" element={<Schema {...{ manifest }} />} />
-        <Route path="/example/:id" element={<Example />} />
+        <Route path="/example/:slug" element={<Example {...{ examples: docsManifest?.examples }} />} />
         <Route path="/function/:id" element={<FunctionDocs {...{ manifest }} />} />
         <Route path="/object/:id" element={<ObjectDocs {...{ manifest }} />} />
         <Route

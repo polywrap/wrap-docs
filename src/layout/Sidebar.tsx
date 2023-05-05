@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { HEIGHT as HEADER_HEIGHT } from "./Header";
-import { examples } from "../constants";
 import SidebarSection from "../components/SidebarSection";
 import UniswapLogo from "../images/uniswap-logo.svg";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
@@ -64,7 +63,12 @@ const SidebarItem = styled.div`
   }
 `;
 
-type SidebarPage = {
+type ReadmePage = {
+  title: string;
+  path: string;
+};
+
+type ExamplePage = {
   title: string;
   path: string;
 };
@@ -87,16 +91,33 @@ function Sidebar(props: SidebarProps) {
   const importedEnums = abi?.importedEnumTypes || [];
   const importedModules = abi?.importedModuleTypes || [];
 
-  const readmeLinks: SidebarPage[] = [];
+  const readmes: ReadmePage[] = [];
+  const examples: ExamplePage[] = [];
   let wrapHasReadmePages = false;
+  let wrapHasExamples = false;
 
   if (props.docsManifest?.pages) {
     for (const pageSlug in props.docsManifest.pages) {
       wrapHasReadmePages = true;
+
       const page = props.docsManifest.pages[pageSlug];
-      readmeLinks.push({
+
+      readmes.push({
         path: pageSlug,
         title: page.title,
+      });
+    }
+  }
+
+  if (props.docsManifest?.examples) {
+    for (const exampleSlug in props.docsManifest.examples) {
+      wrapHasExamples = true;
+
+      const example = props.docsManifest.examples[exampleSlug];
+
+      examples.push({
+        path: exampleSlug,
+        title: example.title,
       });
     }
   }
@@ -114,7 +135,7 @@ function Sidebar(props: SidebarProps) {
       </WrapType>
       {wrapHasReadmePages ? (
         <SidebarSection name="README" initOpen>
-          {readmeLinks.map((x) => (
+          {readmes.map((x) => (
             <>
               <SidebarItem onClick={() => navigate(`/readme/${x.path}`)}>
                 {x.title}
@@ -125,11 +146,11 @@ function Sidebar(props: SidebarProps) {
       ) : (
         <SidebarSection name="README" onClick={() => navigate("/")} />
       )}
-      {examples && (
+      {wrapHasExamples && (
         <SidebarSection name="Examples" initOpen>
           {examples.map((i) => (
-            <SidebarItem onClick={() => navigate("/example/" + i.name)}>
-              {i.name}
+            <SidebarItem onClick={() => navigate("/example/" + i.path)}>
+              {i.title}
             </SidebarItem>
           ))}
         </SidebarSection>
