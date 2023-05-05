@@ -5,13 +5,15 @@ import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
 import ExampleStepRunner from "../components/ExampleStepRunner";
 import { ExampleStep } from "../types/Example";
 import { wrapperUri } from "../constants";
+import ExampleRunner from "../components/ExampleRunner";
+import { useEffect, useMemo, useState } from "react";
 
 type ExampleProps = {
   examples: DocsManifest["examples"];
 };
 
 function parseStepUri(uri: string) {
-  if(uri === "$$WRAP_URI"){
+  if (uri === "$$WRAP_URI") {
     return wrapperUri;
   }
 
@@ -22,6 +24,26 @@ function Example(props: ExampleProps) {
   const { examples } = props;
   const client = usePolywrapClient();
   const { slug } = useParams<"slug">();
+
+  const steps = useMemo<ExampleStep[]>(() => {
+    if (!examples || !slug) {
+      return [];
+    }
+
+    const example = examples[slug];
+
+    if (!example || !example.steps?.length) {
+      return [];
+    }
+    const steps: ExampleStep[] = example.steps.map((step) => ({
+      uri: parseStepUri(step.uri),
+      method: step.method,
+      args: step.args ?? {},
+      description: step.description,
+    }));
+
+    return steps;
+  }, [slug, examples]);
 
   if (!examples) {
     return <div>These docs don't contain examples!</div>;
@@ -41,21 +63,22 @@ function Example(props: ExampleProps) {
     return <div>Example requires at least one step!</div>;
   }
 
-  const steps: ExampleStep[] = example.steps.map((step) => ({
-    uri: parseStepUri(step.uri),
-    method: step.method,
-    args: step.args ?? {},
-    description: step.description,
-  }));
+  // const steps: ExampleStep[] = example.steps.map((step) => ({
+  //   uri: parseStepUri(step.uri),
+  //   method: step.method,
+  //   args: step.args ?? {},
+  //   description: step.description,
+  // }));
 
   return (
     <>
       <div>{example.title}</div>
-      {steps.map((step) => (
+      {/* {steps.map((step) => (
         <>
           <ExampleStepRunner {...{ client, step }} />
         </>
-      ))}
+      ))} */}
+      <ExampleRunner {...{ client, steps }} />
     </>
   );
 }

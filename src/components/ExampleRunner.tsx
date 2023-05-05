@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { PlayArrow, Settings, ManageSearch } from "@mui/icons-material";
 import { InvokeResult, PolywrapClient } from "@polywrap/client-js";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { irBlack as syntax } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { irBlack as syntax } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import Loader from "./Loader";
 import Spinner from "./Spinner";
 import Button from "./Button";
 import Toggle from "./Toggle";
 import Dropdown from "./Dropdown";
-import MultiSelect from './MultiSelect';
-import { getInvokeSnippet } from '../utils/getInvokeSnippet';
-import { InvokeLanguage, invokeLanguages } from '../utils/InvokeLanguage';
-import { Example } from "../constants";
+import MultiSelect from "./MultiSelect";
+import { getInvokeSnippet } from "../utils/getInvokeSnippet";
+import { InvokeLanguage, invokeLanguages } from "../utils/InvokeLanguage";
+import ExampleStepRunner from "./ExampleStepRunner";
+import { Example, ExampleStep } from "../types/Example";
 
 const Header = styled.div`
   display: flex;
@@ -23,7 +24,7 @@ const Header = styled.div`
 `;
 
 const DocsLink = styled.span`
-  color: ${props => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors[50]};
   display: flex;
   align-items: center;
 
@@ -34,17 +35,16 @@ const DocsLink = styled.span`
 `;
 
 const DocsText = styled.h6`
-  color: ${props => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors[50]};
   font-weight: 100;
 `;
 
 const Title = styled.h1`
-  font-weight: 100;
-  font-stretch: expanded;
+  font-weight: 300;
 `;
 
 const Description = styled.h2`
-  font-weight: 100;
+  font-weight: 300;
   font-size: large;
 `;
 
@@ -61,11 +61,11 @@ const SettingsMenu = styled.div`
   z-index: 1;
   display: grid;
   flex-direction: column;
-  background-color: ${props => props.theme.colors[900]};
+  background-color: ${(props) => props.theme.colors[900]};
   border-radius: 5px;
   padding: 5px;
   margin: 5px 0px;
-  background-color: ${props => props.theme.colors[50]}3b;
+  background-color: ${(props) => props.theme.colors[50]}3b;
 `;
 
 const RunArrow = styled(PlayArrow)`
@@ -82,174 +82,112 @@ const SnippetContainer = styled.div`
 `;
 
 const SnippetText = styled.div`
+  margin-top: 1rem;
   max-height: 50vh;
-  font-size: 0.90rem;
+  font-size: 0.9rem;
   overflow: auto;
+  border: 1px solid ${(props) => props.theme.colors[50]};
+  border-radius: 5px;
 `;
 
-const ResultTitle = styled.h3`
-  font-weight: 600;
+const ErrorTitle = styled.h3`
+  font-weight: 400;
   text-align: left;
 `;
 
-const ResultContainer = styled.div`
+const ErrorContainer = styled.div`
   display: flex;
   margin: auto;
   width: 100%;
 `;
 
-const ResultText = styled.div`
+const ErrorText = styled.div`
+  margin-top: 1rem;
   max-height: 50vh;
-  font-weight: 500;
-  font-size 0.90rem;
+  font-size: 0.9rem;
   overflow: auto;
+  border: 1px solid red;
+  border-radius: 5px;
 `;
 
+type ExampleStepWithResult = {
+  example: ExampleStep;
+  result?: InvokeResult;
+};
+
 function ExampleRunner(props: {
-  id: string,
-  example: Example,
-  client: PolywrapClient
+  steps: ExampleStep[];
+  client: PolywrapClient;
 }) {
-  const navigate = useNavigate();
-  const [result, setResult] = React.useState<
-    Record<string, InvokeResult<unknown>>
-  >({});
-  const [waiting, setWaiting] = React.useState(false);
-  const [inspectArgs, setInspectArgs] = React.useState(false);
-  const [codegen, setCodegen] = React.useState(false);
-  const [selectedLanguage, setSelectedLanguage] = React.useState<
-    InvokeLanguage
-  >("TypeScript");
-
-  const { name, description, uri, method, args } = props.example;
-  const client = props.client;
-  const id = props.id;
-
-  const invokeSnippet = getInvokeSnippet(
-    uri,
-    "uniswap",
-    method,
-    args,
-    selectedLanguage,
-    inspectArgs,
-    codegen
+  const { steps, client } = props;
+  const [lastResult, setLastResult] = useState<InvokeResult | undefined>(
+    undefined
   );
+  const firstStep = steps[0];
 
-  const run = async () => {
-    delete result[id];
-    setResult(result);
-    setWaiting(true);
-    result[id] = await client.invoke({
-      uri,
-      method,
-      args
-    });
-    setResult(result);
-    setWaiting(false);
-  }
+  const getInitialState = () => {
+    return [
+      {
+        example: {
+          args: firstStep.args,
+          description: firstStep.description,
+          method: firstStep.method,
+          uri: firstStep.uri,
+        },
+      },
+    ];
+  };
+  const [examplesWithResults, setExamplesWithResults] = useState<
+    ExampleStepWithResult[]
+  >(getInitialState());
 
-  const toggleStyle: React.CSSProperties = {
-    height: "32px",
-    width: "fit-content",
-    justifySelf: "end",
-    marginBottom: "5px"
+  // Reset component when steps change
+  useEffect(() => {
+    setLastResult(undefined);
+    setExamplesWithResults(getInitialState());
+  }, [steps]);
+
+  const onExampleResult = (result: InvokeResult, index: number) => {
+    setLastResult(result);
+
+    if (result.ok) {
+      const ewr = [...examplesWithResults];
+      ewr[index].result = result;
+
+      const results = ewr.map(
+        (x) => x.result ?? ({ ok: false } as InvokeResult)
+      );
+
+      // If this is the latest result and is not the last one expected
+      if (index === ewr.length - 1 && index < steps.length - 1) {
+        ewr.push({
+          example: {
+            args: steps[index + 1].args,
+            description: steps[index + 1].description,
+            method: steps[index + 1].method,
+            uri: steps[index + 1].uri,
+          },
+        });
+      } else {
+        console.log("Nope");
+      }
+
+      setExamplesWithResults(ewr);
+    }
   };
 
   return (
     <>
-    <Header>
-      <Title>
-        <b>{name}</b>
-      </Title>
-      <DocsLink
-        onClick={() => navigate("/function/" + method)}
-      >
-        <DocsText>docs</DocsText>
-        <ManageSearch />
-      </DocsLink>
-    </Header>
-    <Description>{description}</Description>
-    <SnippetContainer>
-      <Controls>
-        <Button
-          style={{
-            height: "28px",
-            marginLeft: "10px",
+      {examplesWithResults.map((ewr, ewrIndex) => (
+        <ExampleStepRunner
+          key={ewrIndex}
+          client={client}
+          step={ewr.example}
+          onResult={(result) => {
+            onExampleResult(result, ewrIndex);
           }}
-          onClick={run}
-        >
-          <text style={{
-            marginRight: "5px"
-          }}>Run</text>
-          {waiting ?
-            <Spinner style={{
-              height: "9px",
-              width: "9px"
-            }}/> :
-            <RunArrow />
-          }
-        </Button>
-        <Dropdown
-          inner={(
-            <Settings />
-          )}
-        >
-          <SettingsMenu>
-            <Toggle
-              style={toggleStyle}
-              position={"right"}
-              initValue={inspectArgs}
-              onToggle={(toggle) => setInspectArgs(toggle)}
-            >
-              Args
-            </Toggle>
-            <Toggle
-              style={toggleStyle}
-              position={"right"}
-              initValue={codegen}
-              onToggle={(toggle) => setCodegen(toggle)}
-            >
-              Codegen
-            </Toggle>
-            <MultiSelect
-              title={selectedLanguage}
-              options={invokeLanguages.flat()}
-              onOptionSelect={(option) =>
-                setSelectedLanguage(option as InvokeLanguage)
-              }
-              position={"right"}
-            />
-          </SettingsMenu>
-        </Dropdown>
-      </Controls>
-      <SnippetText>
-        <SyntaxHighlighter
-          showLineNumbers={false}
-          language={selectedLanguage.toLowerCase()}
-          style={syntax}
-        >
-          {invokeSnippet}
-        </SyntaxHighlighter>
-      </SnippetText>
-    </SnippetContainer>
-    {(waiting || result[id] !== undefined) && (
-      <>
-        <ResultTitle>Result</ResultTitle>
-        {waiting ?
-          <Loader /> :
-          <ResultContainer>
-            <ResultText>
-              <SyntaxHighlighter showLineNumbers={false} language="json" style={syntax}>
-                {
-                  JSON.stringify(result[id], null, 2)
-                    .replace(/"([^"]+)":/g, '$1:')
-                }
-              </SyntaxHighlighter>
-            </ResultText>
-          </ResultContainer>
-        }
-      </>
-    )}
+        />
+      ))}
     </>
   );
 }

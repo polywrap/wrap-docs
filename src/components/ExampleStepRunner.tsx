@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { PlayArrow, Settings } from "@mui/icons-material";
+import { ManageSearch, PlayArrow, Settings } from "@mui/icons-material";
 import { InvokeResult, PolywrapClient } from "@polywrap/client-js";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { irBlack as syntax } from "react-syntax-highlighter/dist/esm/styles/hljs";
@@ -62,7 +62,6 @@ const SnippetContainer = styled.div`
 `;
 
 const SnippetText = styled.div`
-  margin-top: 1rem;
   max-height: 50vh;
   font-size: 0.9rem;
   overflow: auto;
@@ -112,11 +111,39 @@ const ErrorText = styled.div`
   border-radius: 5px;
 `;
 
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const DocsLink = styled.span`
+  color: ${(props) => props.theme.colors[50]};
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`;
+
+const DocsText = styled.h6`
+  color: ${(props) => props.theme.colors[50]};
+  font-weight: 100;
+`;
+
+const DropdownWithDocsLink = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
 function ExampleStepRunner(props: {
   step: ExampleStep;
   client: PolywrapClient;
   onResult?: (result: InvokeResult) => void;
 }) {
+  const navigate = useNavigate();
   const [result, setResult] = React.useState<InvokeResult<unknown>>();
   const [waiting, setWaiting] = React.useState(false);
   const [inspectArgs, setInspectArgs] = React.useState(true);
@@ -128,9 +155,14 @@ function ExampleStepRunner(props: {
   const client = props.client;
   const onResult = props.onResult;
 
+  // We need to reset the internal result when the step being rendered changes
+  useEffect(() => {
+    setResult(undefined);
+  }, [props.step]);
+
   const invokeSnippet = getInvokeSnippet(
     uri,
-    "TEST",
+    "module",
     method,
     args,
     selectedLanguage,
@@ -159,6 +191,7 @@ function ExampleStepRunner(props: {
 
   return (
     <>
+      <Header></Header>
       <Description>{description}</Description>
       <SnippetContainer>
         <Controls>
@@ -188,34 +221,40 @@ function ExampleStepRunner(props: {
               <RunArrow />
             )}
           </Button>
-          <Dropdown inner={<Settings />}>
-            <SettingsMenu>
-              <Toggle
-                style={toggleStyle}
-                position={"right"}
-                initValue={inspectArgs}
-                onToggle={(toggle) => setInspectArgs(toggle)}
-              >
-                Args
-              </Toggle>
-              <Toggle
-                style={toggleStyle}
-                position={"right"}
-                initValue={codegen}
-                onToggle={(toggle) => setCodegen(toggle)}
-              >
-                Codegen
-              </Toggle>
-              <MultiSelect
-                title={selectedLanguage}
-                options={invokeLanguages.flat()}
-                onOptionSelect={(option) =>
-                  setSelectedLanguage(option as InvokeLanguage)
-                }
-                position={"right"}
-              />
-            </SettingsMenu>
-          </Dropdown>
+          <DropdownWithDocsLink>
+            <Dropdown inner={<Settings />}>
+              <SettingsMenu>
+                <Toggle
+                  style={toggleStyle}
+                  position={"right"}
+                  initValue={inspectArgs}
+                  onToggle={(toggle) => setInspectArgs(toggle)}
+                >
+                  Args
+                </Toggle>
+                <Toggle
+                  style={toggleStyle}
+                  position={"right"}
+                  initValue={codegen}
+                  onToggle={(toggle) => setCodegen(toggle)}
+                >
+                  Codegen
+                </Toggle>
+                <MultiSelect
+                  title={selectedLanguage}
+                  options={invokeLanguages.flat()}
+                  onOptionSelect={(option) =>
+                    setSelectedLanguage(option as InvokeLanguage)
+                  }
+                  position={"right"}
+                />
+              </SettingsMenu>
+            </Dropdown>
+            <DocsLink onClick={() => navigate("/function/" + method)}>
+              <DocsText>docs</DocsText>
+              <ManageSearch />
+            </DocsLink>
+          </DropdownWithDocsLink>
         </Controls>
         <SnippetText>
           <SyntaxHighlighter
