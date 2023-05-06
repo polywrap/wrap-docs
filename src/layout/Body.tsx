@@ -25,27 +25,28 @@ const Main = styled.main`
 type BodyProps = {
   manifest: WrapManifest;
   docsManifest?: DocsManifest;
+  wrapUri: string;
 };
 
 function Body(props: BodyProps) {
-  const { manifest, docsManifest } = props;
+  const { manifest, docsManifest, wrapUri } = props;
 
   return (
     <Main>
       <Routes>
-        <Route path="/" element={<Readme {...{ docsManifest }} />} />
+        <Route path="/" element={<Readme {...{ docsManifest, wrapUri }} />} />
         <Route
           path="/readme/:slug"
-          element={<Readme {...{ docsManifest }} />}
+          element={<Readme {...{ docsManifest, wrapUri }} />}
         />
         <Route path="/schema" element={<Schema {...{ manifest }} />} />
         <Route
           path="/example/:slug"
-          element={<Example {...{ examples: docsManifest?.examples }} />}
+          element={<Example {...{ examples: docsManifest?.examples, wrapUri }} />}
         />
         <Route
           path="/function/:id"
-          element={<FunctionDocs {...{ manifest }} />}
+          element={<FunctionDocs {...{ manifest, docsManifest }} />}
         />
         <Route path="/object/:id" element={<ObjectDocs {...{ manifest }} />} />
         <Route

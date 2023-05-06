@@ -8,7 +8,6 @@ import { irBlack as syntax } from "react-syntax-highlighter/dist/esm/styles/hljs
 import { CodeProps } from "react-markdown/lib/ast-to-react";
 import { usePolywrapClient } from "@polywrap/react";
 import { useParams } from "react-router-dom";
-import { wrapperUri } from "../constants";
 import { WrapError } from "@polywrap/client-js";
 import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
 
@@ -22,6 +21,11 @@ const Markdown = styled(ReactMarkdown)`
   }
 `;
 
+type ReadmeProps = {
+  docsManifest?: DocsManifest;
+  wrapUri: string;
+};
+
 type ReadmeState = {
   loading: boolean;
   error?: WrapError;
@@ -32,12 +36,8 @@ const INITIAL_README_STATE: ReadmeState = {
   loading: true,
 };
 
-type ReadmeProps = {
-  docsManifest?: DocsManifest;
-};
-
 function Readme(props: ReadmeProps) {
-  const { docsManifest } = props;
+  const { docsManifest, wrapUri } = props;
   let { slug } = useParams<"slug">();
 
   const client = usePolywrapClient();
@@ -56,7 +56,7 @@ function Readme(props: ReadmeProps) {
       if (docsManifest?.pages?.[slug]) {
         const page = docsManifest?.pages?.[slug];
 
-        const pageContentsResult = await client.getFile(wrapperUri, {
+        const pageContentsResult = await client.getFile(wrapUri, {
           path: `docs/${page.path}`,
           encoding: "utf-8",
         });

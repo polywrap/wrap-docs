@@ -2,10 +2,11 @@ import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";
 import { Launch, UnfoldMore } from "@mui/icons-material";
 
-import { examples } from "../constants";
 import RenderSchema from "../components/RenderSchema";
 import { getTypeNameRoute } from "../utils/getTypeNameRoute";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
+import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
+import { Example, ExampleStep } from "../types/Example";
 
 const Header = styled.div`
   display: flex;
@@ -19,7 +20,7 @@ const Title = styled.h1`
 `;
 
 const SchemaLink = styled.span`
-  color: ${props => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors[50]};
   display: flex;
   align-items: center;
 
@@ -30,7 +31,7 @@ const SchemaLink = styled.span`
 `;
 
 const SchemaText = styled.h6`
-  color: ${props => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors[50]};
   font-weight: 100;
 `;
 
@@ -55,7 +56,7 @@ const ArgumentName = styled.span`
 const ExampleList = styled.ul`
   list-style: none;
   padding-left: 16px;
-`
+`;
 
 const ExampleListItem = styled.li`
   cursor: pointer;
@@ -64,13 +65,19 @@ const ExampleListItem = styled.li`
   }
 `;
 
+type ExampleRef = {
+  slug: string;
+  title: string;
+};
+
 type FunctionDocsProps = {
   manifest: WrapManifest;
+  docsManifest?: DocsManifest;
 };
 
 function FunctionDocs(props: FunctionDocsProps) {
   const navigate = useNavigate();
-  const { manifest } = props;
+  const { manifest, docsManifest } = props;
   const { id } = useParams<"id">();
 
   // Find the function
@@ -79,7 +86,7 @@ function FunctionDocs(props: FunctionDocsProps) {
   if (!abi) {
     const message = `ABI not found.`;
     console.error(message);
-    return (<div>{message}</div>);
+    return <div>{message}</div>;
   }
 
   const methods = abi.moduleType?.methods || [];
@@ -88,13 +95,24 @@ function FunctionDocs(props: FunctionDocsProps) {
   if (!method) {
     const message = `Unable to find function "${id}".`;
     console.error(message);
-    return (<div>{message}</div>);
+    return <div>{message}</div>;
   }
 
   // Find any examples including this function
-  const exampleRefs = examples
-    .filter((x) => x.method === method.name)
-    .map((x) => x.name);
+  const exampleRefs: ExampleRef[] = [];
+
+  if (docsManifest?.examples) {
+    for (const slug in docsManifest.examples) {
+      const example = docsManifest.examples[slug];
+
+      if (example.steps?.some((x) => x.method === method.name)) {
+        exampleRefs.push({
+          slug: slug,
+          title: example.title,
+        });
+      }
+    }
+  }
 
   return (
     <>
@@ -102,17 +120,13 @@ function FunctionDocs(props: FunctionDocsProps) {
         <Title>
           Function: <b>{method.name}</b>
         </Title>
-        <SchemaLink
-          onClick={() => navigate("../schema")}
-        >
+        <SchemaLink onClick={() => navigate("../schema")}>
           <SchemaText>schema</SchemaText>
           <UnfoldMore />
         </SchemaLink>
       </Header>
       {method?.comment && (
-        <FunctionDescription>
-          {method.comment}
-        </FunctionDescription>
+        <FunctionDescription>{method.comment}</FunctionDescription>
       )}
       <RenderSchema
         methods={[method]}
@@ -126,37 +140,33 @@ function FunctionDocs(props: FunctionDocsProps) {
       />
       {method?.arguments?.length && (
         <>
-          <SectionTitle>
-          Arguments
-          </SectionTitle>
+          <SectionTitle>Arguments</SectionTitle>
           <ArgumentList>
-          {method.arguments.map((argument) => {
-            const required = argument.required;
-            return (
-              <li>
-                <ArgumentName>
-                  {argument.name}
-                </ArgumentName>
-                {!required && " (optional)"}
-                {" - "}
-                {argument.comment || "no comment."}
-              </li>
-            );
-          })}
+            {method.arguments.map((argument) => {
+              const required = argument.required;
+              return (
+                <li>
+                  <ArgumentName>{argument.name}</ArgumentName>
+                  {!required && " (optional)"}
+                  {" - "}
+                  {argument.comment || "no comment."}
+                </li>
+              );
+            })}
           </ArgumentList>
         </>
       )}
       {exampleRefs.length > 0 && (
         <>
-          <SectionTitle>
-            Examples
-          </SectionTitle>
+          <SectionTitle>Examples</SectionTitle>
           <ExampleList>
             {exampleRefs.map((example) => (
-              <ExampleListItem onClick={() => navigate("../example/" + example)}>
+              <ExampleListItem
+                onClick={() => navigate("../example/" + example.slug)}
+              >
                 <span style={{ display: "flex" }}>
                   <Launch style={{ paddingRight: "0.5em" }} />
-                  {example}
+                  {example.title}
                 </span>
               </ExampleListItem>
             ))}

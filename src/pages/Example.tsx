@@ -3,24 +3,24 @@ import { usePolywrapClient } from "@polywrap/react";
 
 import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
 import { ExampleStep } from "../types/Example";
-import { wrapperUri } from "../constants";
 import ExampleRunner from "../components/ExampleRunner";
 import { useMemo } from "react";
 
 type ExampleProps = {
   examples: DocsManifest["examples"];
+  wrapUri: string;
 };
 
-function parseStepUri(uri: string) {
+function parseStepUri(uri: string, wrapUri: string) {
   if (uri === "$$WRAP_URI") {
-    return wrapperUri;
+    return wrapUri;
   }
 
   return uri;
 }
 
 function Example(props: ExampleProps) {
-  const { examples } = props;
+  const { examples, wrapUri } = props;
   const client = usePolywrapClient();
   const { slug } = useParams<"slug">();
 
@@ -35,7 +35,7 @@ function Example(props: ExampleProps) {
       return [];
     }
     const steps: ExampleStep[] = example.steps.map((step) => ({
-      uri: parseStepUri(step.uri),
+      uri: parseStepUri(step.uri, wrapUri),
       method: step.method,
       args: step.args ?? {},
       description: step.description,

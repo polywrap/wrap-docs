@@ -9,7 +9,6 @@ import {
 import styled from 'styled-components';
 
 import { ThemeContext } from "../context/ThemeProvider";
-import { wrapperUri } from "../constants";
 import Dropdown from "../components/Dropdown";
 import PolywrapLogo from '../components/PolywrapLogo';
 import MultiSelect from '../components/MultiSelect';
@@ -111,7 +110,12 @@ const SettingsMenu = styled.div`
   background-color: ${props => props.theme.colors[50]}3b;
 `;
 
-function Header() {
+type HeaderProps = {
+  wrapUri: string;
+};
+
+function Header(props: HeaderProps) {
+  const { wrapUri } = props;
   const desktopWidth = 700;
   const [isDesktop, setDesktop] = React.useState(window.innerWidth > desktopWidth);
   const { theme, setTheme } = React.useContext(ThemeContext);
@@ -124,8 +128,6 @@ function Header() {
     window.addEventListener("resize", updateMedia);
     return () => window.removeEventListener("resize", updateMedia);
   });
-
-  const uri = wrapperUri;
 
   return (
     <HeaderContainer>
@@ -147,7 +149,7 @@ function Header() {
         >
           <WrapUriContainer>
             <WrapUri>
-              {uri}
+              {wrapUri}
             </WrapUri>
             <CopyAll
               style={{
@@ -156,7 +158,7 @@ function Header() {
                 height: "unset",
                 cursor: "pointer"
               }}
-              onClick={() => uri && navigator.clipboard.writeText(uri)}
+              onClick={() => wrapUri && navigator.clipboard.writeText(wrapUri)}
             />
           </WrapUriContainer>
         </HeaderButton>

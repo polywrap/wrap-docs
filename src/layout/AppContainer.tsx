@@ -4,10 +4,10 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { useWrapManifest } from "../hooks/useWrapManifest";
 import { usePolywrapClient } from "@polywrap/react";
-import { wrapperUri } from "../constants";
 import Loader from "../components/Loader";
 import { useDocsManifest } from "../hooks/useDocsManifest";
-import { Route, Routes, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { Uri } from "@polywrap/client-js";
 
 const AppBody = styled.div`
   width: unset !important;
@@ -23,7 +23,7 @@ function AppContainer() {
   if (!wrapUri) {
     return (
       <>
-        <Header />
+        <Header {...{ wrapUri: "" }} />
         <AppBody>
           <div>Wrap URI is missing.</div>
         </AppBody>
@@ -31,7 +31,19 @@ function AppContainer() {
     );
   }
 
-  return <InnerContainer {...{ wrapUri }} />;
+  try {
+    const sanitizedUri = Uri.from(wrapUri).uri;
+
+    return <InnerContainer {...{ wrapUri: sanitizedUri }} />;
+  } catch (e) {
+    return (
+      <>
+        <AppBody>
+          <div>Wrap URI is malformed!</div>
+        </AppBody>
+      </>
+    );
+  }
 }
 
 type InnerContainerProps = {
@@ -58,7 +70,7 @@ function InnerContainer(props: InnerContainerProps) {
   if (loading || docsLoading) {
     return (
       <>
-        <Header />
+        <Header {...{ wrapUri }} />
         <AppBody>
           <Loader></Loader>
         </AppBody>
@@ -72,10 +84,10 @@ function InnerContainer(props: InnerContainerProps) {
 
   return (
     <>
-      <Header />
+      <Header {...{ wrapUri }} />
       <AppBody>
         <Sidebar {...{ manifest, docsManifest, wrapUri }} />
-        <Body {...{ manifest, docsManifest }} />
+        <Body {...{ manifest, docsManifest, wrapUri }} />
       </AppBody>
     </>
   );
