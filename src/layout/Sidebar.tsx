@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { HEIGHT as HEADER_HEIGHT } from "./Header";
 import SidebarSection from "../components/SidebarSection";
 import UniswapLogo from "../images/uniswap-logo.svg";
+import defaultWrapLogo from "../images/default-wrap-logo.svg";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
 import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
 import { useEffect, useMemo, useState } from "react";
@@ -104,7 +105,7 @@ function Sidebar(props: SidebarProps) {
   let wrapHasExamples = false;
 
   // Wrap logo
-  const [wrapLogoUrl, setWrapLogoUrl] = useState(DEFAULT_WRAP_LOGO_URL);
+  const [wrapLogoUrl, setWrapLogoUrl] = useState(defaultWrapLogo);
   useEffect(() => {
     if (props.docsManifest?.logo) {
       const logoPath = props.docsManifest.logo;
@@ -115,12 +116,12 @@ function Sidebar(props: SidebarProps) {
         if (logoResult.ok) {
           setWrapLogoUrl(URL.createObjectURL(new Blob([logoResult.value])));
         } else {
-          setWrapLogoUrl(DEFAULT_WRAP_LOGO_URL);
+          setWrapLogoUrl(defaultWrapLogo);
         }
       };
       exec();
     } else {
-      setWrapLogoUrl(DEFAULT_WRAP_LOGO_URL);
+      setWrapLogoUrl(defaultWrapLogo);
     }
   }, [props.docsManifest?.logo]);
 
@@ -153,7 +154,7 @@ function Sidebar(props: SidebarProps) {
   return (
     <SidebarContainer className="sidebar">
       <WrapLogo onClick={() => navigate("")}>
-        <img src={wrapLogoUrl} alt="uniswap-logo" width={100} height={100} />
+        <img src={wrapLogoUrl} alt="Wrap logo" width={100} height={100} />
       </WrapLogo>
       <WrapName onClick={() => navigate("")}>{manifest.name}</WrapName>
       <WrapType>
