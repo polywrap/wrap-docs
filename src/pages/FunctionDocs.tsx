@@ -103,7 +103,7 @@ function FunctionDocs(props: FunctionDocsProps) {
           Function: <b>{method.name}</b>
         </Title>
         <SchemaLink
-          onClick={() => navigate("/schema")}
+          onClick={() => navigate("../schema")}
         >
           <SchemaText>schema</SchemaText>
           <UnfoldMore />
@@ -153,7 +153,7 @@ function FunctionDocs(props: FunctionDocsProps) {
           </SectionTitle>
           <ExampleList>
             {exampleRefs.map((example) => (
-              <ExampleListItem onClick={() => navigate("/example/" + example)}>
+              <ExampleListItem onClick={() => navigate("../example/" + example)}>
                 <span style={{ display: "flex" }}>
                   <Launch style={{ paddingRight: "0.5em" }} />
                   {example}

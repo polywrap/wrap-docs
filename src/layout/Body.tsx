@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
 
@@ -34,10 +34,19 @@ function Body(props: BodyProps) {
     <Main>
       <Routes>
         <Route path="/" element={<Readme {...{ docsManifest }} />} />
-        <Route path="/readme/:slug" element={<Readme {...{ docsManifest }} />} />
+        <Route
+          path="/readme/:slug"
+          element={<Readme {...{ docsManifest }} />}
+        />
         <Route path="/schema" element={<Schema {...{ manifest }} />} />
-        <Route path="/example/:slug" element={<Example {...{ examples: docsManifest?.examples }} />} />
-        <Route path="/function/:id" element={<FunctionDocs {...{ manifest }} />} />
+        <Route
+          path="/example/:slug"
+          element={<Example {...{ examples: docsManifest?.examples }} />}
+        />
+        <Route
+          path="/function/:id"
+          element={<FunctionDocs {...{ manifest }} />}
+        />
         <Route path="/object/:id" element={<ObjectDocs {...{ manifest }} />} />
         <Route
           path="/import/object/:id"
@@ -48,7 +57,10 @@ function Body(props: BodyProps) {
           path="/import/enum/:id"
           element={<EnumDocs import {...{ manifest }} />}
         />
-        <Route path="/import/module/:id" element={<ImportModuleDocs {...{ manifest }} />} />
+        <Route
+          path="/import/module/:id"
+          element={<ImportModuleDocs {...{ manifest }} />}
+        />
         <Route path="*" element={<NoMatch />} />
       </Routes>
     </Main>

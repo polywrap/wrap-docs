@@ -97,7 +97,7 @@ function ObjectDocs(props: ObjectDocsProps) {
           Object: <b>{object.type}</b>
         </Title>
         <SchemaLink
-          onClick={() => navigate("/schema")}
+          onClick={() => navigate("../schema")}
         >
           <SchemaText>schema</SchemaText>
           <UnfoldMore />

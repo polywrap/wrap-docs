@@ -73,7 +73,7 @@ function Schema(props: SchemaProps) {
         }
       }}
       onFuncNameClick={(name) => {
-        navigate("/function/" + name);
+        navigate("../function/" + name);
       }}
     />
     </>

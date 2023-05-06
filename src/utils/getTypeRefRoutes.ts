@@ -59,17 +59,17 @@ export function getTypeRefRoutes(
 
   functionArgs.forEach((name) => result.functionArgs.push({
     name,
-    route: "/function/" + name
+    route: "../function/" + name
   }));
 
   functionRets.forEach((name) => result.functionRets.push({
     name,
-    route: "/function/" + name
+    route: "../function/" + name
   }));
 
   objects.forEach((name) => result.objects.push({
     name,
-    route: "/object/" + name
+    route: "../object/" + name
   }));
 
   return result;

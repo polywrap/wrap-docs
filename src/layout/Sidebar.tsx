@@ -127,7 +127,7 @@ function Sidebar(props: SidebarProps) {
       <WrapLogo>
         <img src={UniswapLogo} alt="uniswap-logo" width={100} height={100} />
       </WrapLogo>
-      <WrapName onClick={() => navigate("/")}>{manifest.name}</WrapName>
+      <WrapName onClick={() => navigate("")}>{manifest.name}</WrapName>
       <WrapType>
         {"[type: "}
         <b>{manifest.type}</b>
@@ -137,19 +137,19 @@ function Sidebar(props: SidebarProps) {
         <SidebarSection name="README" initOpen>
           {readmes.map((x) => (
             <>
-              <SidebarItem onClick={() => navigate(`/readme/${x.path}`)}>
+              <SidebarItem onClick={() => navigate(`readme/${x.path}`)}>
                 {x.title}
               </SidebarItem>
             </>
           ))}
         </SidebarSection>
       ) : (
-        <SidebarSection name="README" onClick={() => navigate("/")} />
+        <SidebarSection name="README" onClick={() => navigate("")} />
       )}
       {wrapHasExamples && (
         <SidebarSection name="Examples" initOpen>
           {examples.map((i) => (
-            <SidebarItem onClick={() => navigate("/example/" + i.path)}>
+            <SidebarItem onClick={() => navigate("example/" + i.path)}>
               {i.title}
             </SidebarItem>
           ))}
@@ -158,7 +158,7 @@ function Sidebar(props: SidebarProps) {
       {functions.length > 0 && (
         <SidebarSection name="Functions">
           {functions.map((i) => (
-            <SidebarItem onClick={() => navigate("/function/" + i.name)}>
+            <SidebarItem onClick={() => navigate("function/" + i.name)}>
               {i.name}
             </SidebarItem>
           ))}
@@ -174,7 +174,7 @@ function Sidebar(props: SidebarProps) {
       {objects.length > 0 && (
         <SidebarSection name="Objects">
           {objects.map((i) => (
-            <SidebarItem onClick={() => navigate("/object/" + i.type)}>
+            <SidebarItem onClick={() => navigate("object/" + i.type)}>
               {i.type}
             </SidebarItem>
           ))}
@@ -183,7 +183,7 @@ function Sidebar(props: SidebarProps) {
       {enums.length > 0 && (
         <SidebarSection name="Enums">
           {enums.map((i) => (
-            <SidebarItem onClick={() => navigate("/enum/" + i.type)}>
+            <SidebarItem onClick={() => navigate("enum/" + i.type)}>
               {i.type}
             </SidebarItem>
           ))}
@@ -192,7 +192,7 @@ function Sidebar(props: SidebarProps) {
       {importedObjects.length > 0 && (
         <SidebarSection name="Import Objects">
           {importedObjects.map((i) => (
-            <SidebarItem onClick={() => navigate("/import/object/" + i.type)}>
+            <SidebarItem onClick={() => navigate("import/object/" + i.type)}>
               {i.type}
             </SidebarItem>
           ))}
@@ -201,7 +201,7 @@ function Sidebar(props: SidebarProps) {
       {importedEnums.length > 0 && (
         <SidebarSection name="Import Enums">
           {importedEnums.map((i) => (
-            <SidebarItem onClick={() => navigate("/import/enum/" + i.type)}>
+            <SidebarItem onClick={() => navigate("import/enum/" + i.type)}>
               {i.type}
             </SidebarItem>
           ))}
@@ -210,13 +210,13 @@ function Sidebar(props: SidebarProps) {
       {importedModules.length > 0 && (
         <SidebarSection name="Import Modules">
           {importedModules.map((i) => (
-            <SidebarItem onClick={() => navigate("/import/module/" + i.type)}>
+            <SidebarItem onClick={() => navigate("import/module/" + i.type)}>
               {i.type}
             </SidebarItem>
           ))}
         </SidebarSection>
       )}
-      <SidebarSection name="Schema" onClick={() => navigate("/schema")} />
+      <SidebarSection name="Schema" onClick={() => navigate("schema")} />
     </SidebarContainer>
   );
 }

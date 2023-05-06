@@ -23,7 +23,7 @@ const Title = styled.h1`
 const SectionTitle = styled.h3``;
 
 const SchemaLink = styled.span`
-  color: ${props => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors[50]};
   display: flex;
   align-items: center;
 
@@ -34,7 +34,7 @@ const SchemaLink = styled.span`
 `;
 
 const SchemaText = styled.h6`
-  color: ${props => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors[50]};
   font-weight: 100;
 `;
 
@@ -45,7 +45,7 @@ const Description = styled.h2`
 
 interface EnumDocsProps {
   import?: boolean;
-  manifest: WrapManifest
+  manifest: WrapManifest;
 }
 
 function EnumDocs(props: EnumDocsProps) {
@@ -60,20 +60,16 @@ function EnumDocs(props: EnumDocsProps) {
   if (!abi) {
     const message = `ABI not found.`;
     console.error(message);
-    return (<div>{message}</div>);
+    return <div>{message}</div>;
   }
 
-  const enums = (
-    props.import ?
-    abi.importedEnumTypes :
-    abi.enumTypes
-  ) || [];
+  const enums = (props.import ? abi.importedEnumTypes : abi.enumTypes) || [];
   const enumDef = enums.find((enumDef) => enumDef.type === id);
 
   if (!enumDef) {
     const message = `Unable to find enum "${id}".`;
     console.error(message);
-    return (<div>{message}</div>);
+    return <div>{message}</div>;
   }
 
   // Find all references in other parts of the ABI
@@ -85,18 +81,12 @@ function EnumDocs(props: EnumDocsProps) {
         <Title>
           Enum: <b>{enumDef.type}</b>
         </Title>
-        <SchemaLink
-          onClick={() => navigate("/schema")}
-        >
+        <SchemaLink onClick={() => navigate("../schema")}>
           <SchemaText>schema</SchemaText>
           <UnfoldMore />
         </SchemaLink>
       </Header>
-      {enumDef?.comment && (
-        <Description>
-          {enumDef.comment}
-        </Description>
-      )}
+      {enumDef?.comment && <Description>{enumDef.comment}</Description>}
       <RenderSchema
         enums={[enumDef]}
         onTypeNameClick={(name) => {
@@ -109,9 +99,7 @@ function EnumDocs(props: EnumDocsProps) {
       />
       {props.import && (
         <>
-          <SectionTitle>
-          URI
-          </SectionTitle>
+          <SectionTitle>URI</SectionTitle>
           {(enumDef as ImportedEnumDefinition).uri}
         </>
       )}

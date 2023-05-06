@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { HashRouter } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import { DefaultBundle } from "@polywrap/client-js";
 import { PolywrapProvider } from "@polywrap/react";
 
@@ -38,7 +38,13 @@ function App() {
         <HashRouter>
           <AppDiv className="app">
             <PolywrapProvider {...defaultConfig}>
-              <AppContainer />
+              <Routes>
+                <Route
+                  path="/"
+                  element={<div>Please specify a Wrap URI</div>}
+                />
+                <Route path="/wrap/:wrapUri/*" element={<AppContainer />} />
+              </Routes>
             </PolywrapProvider>
           </AppDiv>
         </HashRouter>

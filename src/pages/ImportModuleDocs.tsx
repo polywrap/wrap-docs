@@ -74,7 +74,7 @@ function ImportModuleDocs(props: ImportModuleDocsProps) {
           Module: <b>{module.type}</b>
         </Title>
         <SchemaLink
-          onClick={() => navigate("/schema")}
+          onClick={() => navigate("../schema")}
         >
           <SchemaText>schema</SchemaText>
           <UnfoldMore />
