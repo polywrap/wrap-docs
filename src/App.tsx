@@ -11,6 +11,7 @@ import Sidebar from "./layout/Sidebar";
 import Body from "./layout/Body";
 
 import "./styles/globals.css";
+import Home from "./pages/Home";
 
 const Root = styled.div`
   background-color: ${(props) => props.theme.colors[900]};
@@ -41,7 +42,7 @@ function App() {
               <Routes>
                 <Route
                   path="/"
-                  element={<div>Please specify a Wrap URI</div>}
+                  element={<Home />}
                 />
                 <Route path="/wrap/:wrapUri/*" element={<AppContainer />} />
               </Routes>

@@ -52,7 +52,7 @@ function Readme(props: ReadmeProps) {
       if (!slug) {
         return;
       }
-  
+
       if (docsManifest?.pages?.[slug]) {
         const page = docsManifest?.pages?.[slug];
 
@@ -62,7 +62,10 @@ function Readme(props: ReadmeProps) {
         });
 
         if (pageContentsResult.ok) {
-          setReadme({ loading: false, markdown: pageContentsResult.value.toString() });
+          setReadme({
+            loading: false,
+            markdown: pageContentsResult.value.toString(),
+          });
         } else {
           setReadme({ loading: false, error: pageContentsResult.error });
         }
@@ -82,12 +85,20 @@ function Readme(props: ReadmeProps) {
         remarkPlugins={[remarkExternalLinks]}
         components={{
           code: (props: CodeProps) => {
-            const language =
-              props.lang || props.className?.replace("language-", "") || "";
+            const { inline, lang, className, children } = props;
+            const language = lang || className?.replace("language-", "") || "";
 
-            return (
-              <SyntaxHighlighter language={language} style={syntax}>
-                {props.children as unknown as string[]}
+            return inline ? (
+              <code {...props} className={className} style={syntax}>
+                {children}
+              </code>
+            ) : (
+              <SyntaxHighlighter
+                language={language}
+                style={syntax}
+                PreTag="div"
+              >
+                {children as unknown as string[]}
               </SyntaxHighlighter>
             );
           },
