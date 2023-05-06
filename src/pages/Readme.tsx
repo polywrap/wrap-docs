@@ -89,7 +89,7 @@ function Readme(props: ReadmeProps) {
             const language = lang || className?.replace("language-", "") || "";
 
             return inline ? (
-              <code {...props} className={className} style={syntax}>
+              <code {...props} className={className}>
                 {children}
               </code>
             ) : (

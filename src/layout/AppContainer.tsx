@@ -74,7 +74,7 @@ function InnerContainer(props: InnerContainerProps) {
     <>
       <Header />
       <AppBody>
-        <Sidebar {...{ manifest, docsManifest }} />
+        <Sidebar {...{ manifest, docsManifest, wrapUri }} />
         <Body {...{ manifest, docsManifest }} />
       </AppBody>
     </>

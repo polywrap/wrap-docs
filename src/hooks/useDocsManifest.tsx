@@ -56,7 +56,7 @@ export function useDocsManifest(
     };
 
     execute();
-  }, []);
+  }, [props.uri]);
 
   return state;
 }

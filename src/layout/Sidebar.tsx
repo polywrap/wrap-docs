@@ -6,6 +6,8 @@ import SidebarSection from "../components/SidebarSection";
 import UniswapLogo from "../images/uniswap-logo.svg";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
 import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
+import { useEffect, useMemo, useState } from "react";
+import { usePolywrapClient } from "@polywrap/react";
 
 const SidebarContainer = styled.nav`
   top: ${HEADER_HEIGHT};
@@ -32,6 +34,7 @@ const WrapLogo = styled.a`
   margin-bottom: 10px;
   text-align: center;
   display: block;
+  cursor: pointer;
 `;
 
 const WrapName = styled.h2`
@@ -76,11 +79,15 @@ type ExamplePage = {
 type SidebarProps = {
   manifest: WrapManifest;
   docsManifest?: DocsManifest;
+  wrapUri: string;
 };
+
+const DEFAULT_WRAP_LOGO_URL = "/default-wrap-logo.svg";
 
 function Sidebar(props: SidebarProps) {
   const navigate = useNavigate();
-  const { manifest } = props;
+  const { manifest, wrapUri } = props;
+  const client = usePolywrapClient();
 
   const abi = manifest?.abi;
   const functions = abi?.moduleType?.methods || [];
@@ -95,6 +102,27 @@ function Sidebar(props: SidebarProps) {
   const examples: ExamplePage[] = [];
   let wrapHasReadmePages = false;
   let wrapHasExamples = false;
+
+  // Wrap logo
+  const [wrapLogoUrl, setWrapLogoUrl] = useState(DEFAULT_WRAP_LOGO_URL);
+  useEffect(() => {
+    if (props.docsManifest?.logo) {
+      const logoPath = props.docsManifest.logo;
+      const exec = async () => {
+        const logoResult = await client.getFile(wrapUri, {
+          path: `docs/${logoPath}`,
+        });
+        if (logoResult.ok) {
+          setWrapLogoUrl(URL.createObjectURL(new Blob([logoResult.value])));
+        } else {
+          setWrapLogoUrl(DEFAULT_WRAP_LOGO_URL);
+        }
+      };
+      exec();
+    } else {
+      setWrapLogoUrl(DEFAULT_WRAP_LOGO_URL);
+    }
+  }, [props.docsManifest?.logo]);
 
   if (props.docsManifest?.pages) {
     for (const pageSlug in props.docsManifest.pages) {
@@ -124,8 +152,8 @@ function Sidebar(props: SidebarProps) {
 
   return (
     <SidebarContainer className="sidebar">
-      <WrapLogo>
-        <img src={UniswapLogo} alt="uniswap-logo" width={100} height={100} />
+      <WrapLogo onClick={() => navigate("")}>
+        <img src={wrapLogoUrl} alt="uniswap-logo" width={100} height={100} />
       </WrapLogo>
       <WrapName onClick={() => navigate("")}>{manifest.name}</WrapName>
       <WrapType>
