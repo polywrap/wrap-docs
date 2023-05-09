@@ -91,11 +91,6 @@ const ResultText = styled.div`
   border-radius: 5px;
 `;
 
-const ErrorTitle = styled.h3`
-  font-weight: 400;
-  text-align: left;
-`;
-
 const ErrorContainer = styled.div`
   display: flex;
   margin: auto;

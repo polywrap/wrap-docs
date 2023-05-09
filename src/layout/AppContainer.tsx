@@ -60,7 +60,6 @@ function InnerContainer(props: InnerContainerProps) {
 
   const {
     manifest: docsManifest,
-    error: docsError,
     loading: docsLoading,
   } = useDocsManifest({
     client,

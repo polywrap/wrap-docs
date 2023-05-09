@@ -1,5 +1,4 @@
-import React from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import styled from "styled-components";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
 

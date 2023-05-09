@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-interface SidebarSection {
+interface SidebarSectionProps {
   name: string;
   children?: React.ReactNode;
   initOpen?: boolean;
@@ -25,7 +25,7 @@ const SectionContainer = styled.div`
   margin-left: 15px;
 `;
 
-function SidebarSection(props: SidebarSection) {
+function SidebarSection(props: SidebarSectionProps) {
   const [open, setOpen] = React.useState(!!props.initOpen);
 
   if (!props.children) {

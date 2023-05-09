@@ -45,7 +45,7 @@ export function useWrapManifest(
     };
 
     execute();
-  }, [props.uri]);
+  }, [props.uri, client, dispatch]);
 
   return state;
 }

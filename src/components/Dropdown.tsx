@@ -1,4 +1,4 @@
-import React from "react";
+import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import Button from "./Button";
@@ -20,24 +20,25 @@ export interface DropdownState {
   setShowDropdown: (showDropdown: boolean) => void;
 }
 
-export const DropdownContext = React.createContext<DropdownState>({
-  setShowDropdown: () => console.log("unimplemented")
+export const DropdownContext = createContext<DropdownState>({
+  setShowDropdown: () => console.log("unimplemented"),
 });
 
 function Dropdown(props: DropdownProps) {
-  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const [showDropdown, innerSetShowDropdown] = React.useState(
-    !!props.showDropdown
+  const [showDropdown, innerSetShowDropdown] = useState(!!props.showDropdown);
+  const setShowDropdown = useCallback(
+    (value: boolean) => {
+      if (props.onShowDropdown) {
+        props.onShowDropdown(value);
+      }
+      innerSetShowDropdown(value);
+    },
+    [props]
   );
-  const setShowDropdown = (value: boolean) => {
-    if (props.onShowDropdown) {
-      props.onShowDropdown(value);
-    }
-    innerSetShowDropdown(value);
-  }
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -46,12 +47,12 @@ function Dropdown(props: DropdownProps) {
         setShowDropdown(false);
       }
     };
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
 
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
-  }, [dropdownRef]);
+  }, [dropdownRef, setShowDropdown]);
 
   return (
     <DropdownContext.Provider value={{ setShowDropdown: setShowDropdown }}>
@@ -62,11 +63,7 @@ function Dropdown(props: DropdownProps) {
         >
           {props.inner}
         </Button>
-        {showDropdown && (
-          <>
-          {props.children}
-          </>
-        )}
+        {showDropdown && <>{props.children}</>}
       </DropdownContainer>
     </DropdownContext.Provider>
   );

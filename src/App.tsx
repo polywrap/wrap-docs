@@ -1,14 +1,10 @@
-import React from "react";
 import styled from "styled-components";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import { DefaultBundle } from "@polywrap/client-js";
 import { PolywrapProvider } from "@polywrap/react";
 
 import ThemeProvider from "./context/ThemeProvider";
-import Header from "./layout/Header";
 import AppContainer from "./layout/AppContainer";
-import Sidebar from "./layout/Sidebar";
-import Body from "./layout/Body";
 
 import "./styles/globals.css";
 import Home from "./pages/Home";

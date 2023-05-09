@@ -6,7 +6,6 @@ import RenderSchema from "../components/RenderSchema";
 import { getTypeNameRoute } from "../utils/getTypeNameRoute";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
 import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
-import { Example, ExampleStep } from "../types/Example";
 
 const Header = styled.div`
   display: flex;

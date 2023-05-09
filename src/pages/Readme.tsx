@@ -73,7 +73,7 @@ function Readme(props: ReadmeProps) {
     };
 
     exec();
-  }, [slug]);
+  }, [slug, client, docsManifest, wrapUri]);
 
   if (readme.loading) {
     return <></>;

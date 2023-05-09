@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect } from "react";
 import {
   DocsManifest,
   deserializeDocsManifest,
@@ -33,7 +33,7 @@ export function useDocsManifest(
   const { state, dispatch } =
     useStateReducer<UseDocsManifestState>(INITIAL_INVOKE_STATE);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const execute = async () => {
       dispatch({ loading: true });
       const docsManifestResult = await client.getFile(props.uri, {
@@ -56,7 +56,7 @@ export function useDocsManifest(
     };
 
     execute();
-  }, [props.uri]);
+  }, [props.uri, client, dispatch]);
 
   return state;
 }

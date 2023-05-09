@@ -2,13 +2,12 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { HEIGHT as HEADER_HEIGHT } from "./Header";
-import SidebarSection from "../components/SidebarSection";
-import UniswapLogo from "../images/uniswap-logo.svg";
 import defaultWrapLogo from "../images/default-wrap-logo.svg";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
 import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePolywrapClient } from "@polywrap/react";
+import SidebarSection from "../components/SidebarSection";
 
 const SidebarContainer = styled.nav`
   top: ${HEADER_HEIGHT};
@@ -18,16 +17,6 @@ const SidebarContainer = styled.nav`
   flex: 0 0 200px;
   overflow-x: hidden;
   overflow-y: scroll;
-`;
-
-const LoadingContainer = styled.div`
-  width: 100%;
-  margin-top: 45px;
-  text-align: center;
-`;
-
-const LoadingText = styled.div`
-  line-height: 3.5em;
 `;
 
 const WrapLogo = styled.a`
@@ -83,8 +72,6 @@ type SidebarProps = {
   wrapUri: string;
 };
 
-const DEFAULT_WRAP_LOGO_URL = "/default-wrap-logo.svg";
-
 function Sidebar(props: SidebarProps) {
   const navigate = useNavigate();
   const { manifest, wrapUri } = props;
@@ -123,7 +110,7 @@ function Sidebar(props: SidebarProps) {
     } else {
       setWrapLogoUrl(defaultWrapLogo);
     }
-  }, [props.docsManifest?.logo]);
+  }, [props.docsManifest?.logo, client, wrapUri]);
 
   if (props.docsManifest?.pages) {
     for (const pageSlug in props.docsManifest.pages) {

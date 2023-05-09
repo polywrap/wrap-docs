@@ -94,7 +94,7 @@ export function parseStringWithStepResultReferences(
   stepIdx: number,
   wrapUri: string
 ): string {
-  const referenceRegex = /\$([0-9])+\.([a-zA-Z0-9_\.])+/g;
+  const referenceRegex = /\$([0-9])+.([a-zA-Z0-9_.])+/g;
 
   return replaceWrapUriToken(
     str.replaceAll(
