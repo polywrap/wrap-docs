@@ -1,21 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import { PlayArrow, Settings, ManageSearch } from "@mui/icons-material";
+import { PlayArrow } from "@mui/icons-material";
 import { InvokeResult, PolywrapClient } from "@polywrap/client-js";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { irBlack as syntax } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
-import Loader from "./Loader";
-import Spinner from "./Spinner";
-import Button from "./Button";
-import Toggle from "./Toggle";
-import Dropdown from "./Dropdown";
-import MultiSelect from "./MultiSelect";
-import { getInvokeSnippet } from "../utils/getInvokeSnippet";
-import { InvokeLanguage, invokeLanguages } from "../utils/InvokeLanguage";
 import ExampleStepRunner from "./ExampleStepRunner";
-import { Example, ExampleStep } from "../types/Example";
+import { ExampleStep } from "../types/Example";
+import {
+  parseStringWithStepResultReferences,
+  replaceWrapUriToken,
+  resolveStepResultReferenceValues,
+} from "../utils/exampleRunnerUtils";
 
 const Header = styled.div`
   display: flex;
@@ -118,8 +112,9 @@ type ExampleStepWithResult = {
 function ExampleRunner(props: {
   steps: ExampleStep[];
   client: PolywrapClient;
+  wrapUri: string;
 }) {
-  const { steps, client } = props;
+  const { steps, client, wrapUri } = props;
   const firstStep = steps[0];
 
   const getInitialState = (): ExampleStepWithResult[] => {
@@ -127,9 +122,14 @@ function ExampleRunner(props: {
       {
         step: {
           args: firstStep.args,
-          description: firstStep.description,
+          description: parseStringWithStepResultReferences(
+            firstStep.description ?? "",
+            [],
+            0,
+            wrapUri
+          ),
           method: firstStep.method,
-          uri: firstStep.uri,
+          uri: replaceWrapUriToken(firstStep.uri, wrapUri),
         },
       },
     ];
@@ -150,16 +150,29 @@ function ExampleRunner(props: {
 
       // If this is the latest result and is not the last one expected
       if (index === ewr.length - 1 && index < steps.length - 1) {
+        const exampleResults = ewr.map((x) => x.result);
         ewr.push({
           step: {
-            args: steps[index + 1].args,
-            description: steps[index + 1].description,
+            args: resolveStepResultReferenceValues(
+              exampleResults,
+              index + 1,
+              steps[index + 1].args
+            ) as Record<string, unknown>,
+            description: parseStringWithStepResultReferences(
+              steps[index + 1].description ?? "",
+              exampleResults,
+              index + 1,
+              wrapUri
+            ),
             method: steps[index + 1].method,
-            uri: steps[index + 1].uri,
+            uri: parseStringWithStepResultReferences(
+              steps[index + 1].uri,
+              exampleResults,
+              index + 1,
+              wrapUri
+            ),
           },
         });
-      } else {
-        console.log("Nope");
       }
 
       setExampleStepsWithResults(ewr);

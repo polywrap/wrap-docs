@@ -11,14 +11,6 @@ type ExampleProps = {
   wrapUri: string;
 };
 
-function parseStepUri(uri: string, wrapUri: string) {
-  if (uri === "$$WRAP_URI") {
-    return wrapUri;
-  }
-
-  return uri;
-}
-
 function Example(props: ExampleProps) {
   const { examples, wrapUri } = props;
   const client = usePolywrapClient();
@@ -35,7 +27,7 @@ function Example(props: ExampleProps) {
       return [];
     }
     const steps: ExampleStep[] = example.steps.map((step) => ({
-      uri: parseStepUri(step.uri, wrapUri),
+      uri: step.uri,
       method: step.method,
       args: step.args ?? {},
       description: step.description,
@@ -65,7 +57,7 @@ function Example(props: ExampleProps) {
   return (
     <>
       <div>{example.title}</div>
-      <ExampleRunner {...{ client, steps }} />
+      <ExampleRunner {...{ client, steps, wrapUri }} />
     </>
   );
 }
