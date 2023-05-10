@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const LinkButton = styled.div`
   padding: 1rem;

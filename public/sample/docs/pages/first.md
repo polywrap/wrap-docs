@@ -1,3 +1,0 @@
-# First page
-
-Hello Polywrap!
