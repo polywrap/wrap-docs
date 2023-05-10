@@ -16,7 +16,8 @@ import Loader from "../components/Loader";
 import SidebarSection from "../components/SidebarSection";
 import { themes, protocols } from "../styles/palette";
 import UniswapLogo from "../images/uniswap-logo.svg";
-import { OpenInNew } from "@mui/icons-material";
+import { ContentCopy, OpenInNew } from "@mui/icons-material";
+import PolywrapLogo from "../components/PolywrapLogo";
 
 export const SIDEBAR_WIDTH = "400px";
 
@@ -122,6 +123,17 @@ export default function Sidebar() {
 
   return (
     <SidebarContainer>
+      <Box
+        sx={{
+          alignItems: "center",
+          display: "flex",
+          height: 80,
+          pl: 2,
+          width: "100%",
+        }}
+      >
+        <PolywrapLogo />
+      </Box>
       <Paper
         sx={{
           p: 2,
@@ -207,11 +219,14 @@ export default function Sidebar() {
               <Typography sx={{ color: "text.disabled", fontSize: 12 }}>
                 URI
               </Typography>
-              <Typography
-                sx={{ color: "fg.1000", fontWeight: 500, fontSize: 12 }}
-              >
-                {uniswapV3Uri}
-              </Typography>
+              <Stack spacing={1} direction="row">
+                <Typography
+                  sx={{ color: "fg.1000", fontWeight: 500, fontSize: 12 }}
+                >
+                  {uniswapV3Uri}
+                </Typography>
+                <ContentCopy sx={{ width: 12 }} />
+              </Stack>
             </Stack>
           )}
           {manifest.type && (
