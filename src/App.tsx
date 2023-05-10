@@ -12,6 +12,8 @@ import Home from "./pages/Home";
 const Root = styled.div`
   background-color: ${(props) => props.theme.colors[900]};
   color: ${(props) => props.theme.colors[50]};
+  position: relative;
+  min-height: 100%;
 `;
 
 const AppDiv = styled.div`

@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const LinkButton = styled.div`
   padding: 1rem;
@@ -7,16 +8,24 @@ const LinkButton = styled.div`
   font-size: 1.5rem;
 `;
 
-const links = ["http/http://localhost:3000/sample", "ens/wraps.eth:ens@1.1.0"];
-
 function Home() {
+  const [wrapUri, setWrapUri] = useState("");
+  const navigate = useNavigate();
+
   return (
     <>
-      {links.map((link) => (
-        <Link to={"wrap/" + encodeURIComponent(link)}>
-          <LinkButton>{link}</LinkButton>
-        </Link>
-      ))}
+      <div>Welcome to wrap-docs!</div>
+      <div>Wrap URI:</div>
+      <div>
+        <input onChange={(e) => setWrapUri(e.target.value)}></input>
+        <button
+          onClick={() => {
+            navigate("wrap/" + encodeURIComponent(wrapUri));
+          }}
+        >
+          Get docs
+        </button>
+      </div>
     </>
   );
 }
