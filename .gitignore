@@ -11,6 +11,9 @@
 # production
 /build
 
+# sample wrap folder for easy local testing
+/public/sample
+
 # misc
 .DS_Store
 .env.local
