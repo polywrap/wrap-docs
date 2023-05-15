@@ -1,12 +1,5 @@
-import styled from "@emotion/styled";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const LinkButton = styled.div`
-  padding: 1rem;
-  color: #fff;
-  font-size: 1.5rem;
-`;
 
 function Home() {
   const [wrapUri, setWrapUri] = useState("");

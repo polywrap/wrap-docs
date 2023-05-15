@@ -6,6 +6,7 @@ import RenderSchema from "../components/RenderSchema";
 import { getTypeNameRoute } from "../utils/getTypeNameRoute";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
 import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
+import { useTheme } from "@mui/material";
 
 const Header = styled.div`
   display: flex;
@@ -19,7 +20,7 @@ const Title = styled.h1`
 `;
 
 const SchemaLink = styled.span`
-  color: ${(props) => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors.bg[50]};
   display: flex;
   align-items: center;
 
@@ -30,7 +31,7 @@ const SchemaLink = styled.span`
 `;
 
 const SchemaText = styled.h6`
-  color: ${(props) => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors.bg[50]};
   font-weight: 100;
 `;
 
@@ -75,6 +76,7 @@ type FunctionDocsProps = {
 };
 
 function FunctionDocs(props: FunctionDocsProps) {
+  const theme = useTheme();
   const navigate = useNavigate();
   const { manifest, docsManifest } = props;
   const { id } = useParams<"id">();
@@ -119,7 +121,7 @@ function FunctionDocs(props: FunctionDocsProps) {
         <Title>
           Function: <b>{method.name}</b>
         </Title>
-        <SchemaLink onClick={() => navigate("../schema")}>
+        <SchemaLink theme={theme} onClick={() => navigate("../schema")}>
           <SchemaText>schema</SchemaText>
           <UnfoldMore />
         </SchemaLink>

@@ -1,25 +1,16 @@
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 import ReactMarkdown from "react-markdown";
 import remarkExternalLinks from "remark-external-links";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { irBlack as syntax } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
-import { CodeProps } from "react-markdown/lib/ast-to-react";
 import { usePolywrapClient } from "@polywrap/react";
 import { useParams } from "react-router-dom";
 import { WrapError } from "@polywrap/client-js";
 import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
 
-const Markdown = styled(ReactMarkdown)`
-  a {
-    color: ${(props) => props.theme.colors[100]};
-  }
-
-  a:visited {
-    color: ${(props) => props.theme.colors[300]};
-  }
-`;
+import { CodeProps } from "react-markdown/lib/ast-to-react";
+import { Box } from "@mui/material";
 
 type ReadmeProps = {
   docsManifest?: DocsManifest;
@@ -79,35 +70,37 @@ function Readme(props: ReadmeProps) {
     return <></>;
   } else if (!readme.markdown) {
     return <></>;
-  } else {
-    return (
-      <Markdown
-        remarkPlugins={[remarkExternalLinks]}
-        components={{
-          code: (props: CodeProps) => {
-            const { inline, lang, className, children } = props;
-            const language = lang || className?.replace("language-", "") || "";
-
-            return inline ? (
-              <code {...props} className={className}>
-                {children}
-              </code>
-            ) : (
-              <SyntaxHighlighter
-                language={language}
-                style={syntax}
-                PreTag="div"
-              >
-                {children as unknown as string[]}
-              </SyntaxHighlighter>
-            );
-          },
-        }}
-      >
-        {readme.markdown}
-      </Markdown>
-    );
   }
+
+  return (
+    <Box
+      component={ReactMarkdown}
+      sx={{
+        a: {
+          color: "primary.main",
+        },
+      }}
+      remarkPlugins={[remarkExternalLinks]}
+      components={{
+        code: (props: CodeProps) => {
+          const { inline, lang, className, children } = props;
+          const language = lang || className?.replace("language-", "") || "";
+
+          return inline ? (
+            <code {...props} className={className}>
+              {children}
+            </code>
+          ) : (
+            <SyntaxHighlighter language={language} style={syntax} PreTag="div">
+              {children as unknown as string[]}
+            </SyntaxHighlighter>
+          );
+        },
+      }}
+    >
+      {readme.markdown}
+    </Box>
+  );
 }
 
 export default Readme;

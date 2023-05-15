@@ -22,7 +22,7 @@ const Title = styled.h1`
 `;
 
 const SchemaLink = styled.span`
-  color: ${props => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors.bg[50]};
   display: flex;
   align-items: center;
 
@@ -33,7 +33,7 @@ const SchemaLink = styled.span`
 `;
 
 const SchemaText = styled.h6`
-  color: ${props => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors.bg[50]};
   font-weight: 100;
 `;
 
@@ -70,21 +70,18 @@ function ObjectDocs(props: ObjectDocsProps) {
   if (!abi) {
     const message = `ABI not found.`;
     console.error(message);
-    return (<div>{message}</div>);
+    return <div>{message}</div>;
   }
 
   // Find the object
-  const objects = (
-    props.import ?
-    abi.importedObjectTypes :
-    abi.objectTypes
-  ) || [];
+  const objects =
+    (props.import ? abi.importedObjectTypes : abi.objectTypes) || [];
   const object = objects.find((object) => object.type === id);
 
   if (!object) {
     const message = `Unable to find object "${id}".`;
     console.error(message);
-    return (<div>{message}</div>);
+    return <div>{message}</div>;
   }
 
   // Find all references in other parts of the ABI
@@ -103,11 +100,7 @@ function ObjectDocs(props: ObjectDocsProps) {
           <UnfoldMore />
         </SchemaLink>
       </Header>
-      {object?.comment && (
-        <Description>
-          {object.comment}
-        </Description>
-      )}
+      {object?.comment && <Description>{object.comment}</Description>}
       <RenderSchema
         objects={[object]}
         onTypeNameClick={(name) => {
@@ -120,31 +113,25 @@ function ObjectDocs(props: ObjectDocsProps) {
       />
       {props.import && (
         <>
-          <SectionTitle>
-          URI
-          </SectionTitle>
+          <SectionTitle>URI</SectionTitle>
           {(object as ImportedObjectDefinition).uri}
         </>
       )}
       {object?.properties?.length && (
         <>
-          <SectionTitle>
-          Properties
-          </SectionTitle>
+          <SectionTitle>Properties</SectionTitle>
           <PropertyList>
-          {object.properties.map((property) => {
-            const required = property.required;
-            return (
-              <li>
-                <PropertyName>
-                  {property.name}
-                </PropertyName>
-                {!required && " (optional)"}
-                {" - "}
-                {property.comment || "no comment."}
-              </li>
-            );
-          })}
+            {object.properties.map((property) => {
+              const required = property.required;
+              return (
+                <li>
+                  <PropertyName>{property.name}</PropertyName>
+                  {!required && " (optional)"}
+                  {" - "}
+                  {property.comment || "no comment."}
+                </li>
+              );
+            })}
           </PropertyList>
         </>
       )}

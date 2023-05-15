@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import styled from "styled-components";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
 
 import Readme from "../pages/Readme";
@@ -12,14 +11,9 @@ import ImportModuleDocs from "../pages/ImportModuleDocs";
 import NoMatch from "../pages/NoMatch";
 import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
 
-const Main = styled.main`
-  padding-bottom: 50px;
-  position: relative;
-  flex-grow: 1;
-  padding: 10px 15px 40px 45px;
-  min-width: 0;
-  display: block;
-`;
+import { Box } from "@mui/material";
+import { SIDEBAR_WIDTH } from "./Sidebar";
+import Header from "./Header";
 
 type BodyProps = {
   manifest: WrapManifest;
@@ -31,39 +25,55 @@ function Body(props: BodyProps) {
   const { manifest, docsManifest, wrapUri } = props;
 
   return (
-    <Main>
-      <Routes>
-        <Route path="/" element={<Readme {...{ docsManifest, wrapUri }} />} />
-        <Route
-          path="/readme/:slug"
-          element={<Readme {...{ docsManifest, wrapUri }} />}
-        />
-        <Route path="/schema" element={<Schema {...{ manifest }} />} />
-        <Route
-          path="/example/:slug"
-          element={<Example {...{ examples: docsManifest?.examples, wrapUri }} />}
-        />
-        <Route
-          path="/function/:id"
-          element={<FunctionDocs {...{ manifest, docsManifest }} />}
-        />
-        <Route path="/object/:id" element={<ObjectDocs {...{ manifest }} />} />
-        <Route
-          path="/import/object/:id"
-          element={<ObjectDocs import {...{ manifest }} />}
-        />
-        <Route path="/enum/:id" element={<EnumDocs {...{ manifest }} />} />
-        <Route
-          path="/import/enum/:id"
-          element={<EnumDocs import {...{ manifest }} />}
-        />
-        <Route
-          path="/import/module/:id"
-          element={<ImportModuleDocs {...{ manifest }} />}
-        />
-        <Route path="*" element={<NoMatch />} />
-      </Routes>
-    </Main>
+    <>
+      <Box sx={{ ml: SIDEBAR_WIDTH, flexGrow: "1" }}>
+        <Header />
+        <Box
+          component="main"
+          sx={{ position: "relative", px: [4, 6, 8], pt: 14 }}
+        >
+          <Routes>
+            <Route
+              path="/"
+              element={<Readme {...{ docsManifest, wrapUri }} />}
+            />
+            <Route
+              path="/readme/:slug"
+              element={<Readme {...{ docsManifest, wrapUri }} />}
+            />
+            <Route path="/schema" element={<Schema {...{ manifest }} />} />
+            <Route
+              path="/example/:slug"
+              element={
+                <Example {...{ examples: docsManifest?.examples, wrapUri }} />
+              }
+            />
+            <Route
+              path="/function/:id"
+              element={<FunctionDocs {...{ manifest, docsManifest }} />}
+            />
+            <Route
+              path="/object/:id"
+              element={<ObjectDocs {...{ manifest }} />}
+            />
+            <Route
+              path="/import/object/:id"
+              element={<ObjectDocs import {...{ manifest }} />}
+            />
+            <Route path="/enum/:id" element={<EnumDocs {...{ manifest }} />} />
+            <Route
+              path="/import/enum/:id"
+              element={<EnumDocs import {...{ manifest }} />}
+            />
+            <Route
+              path="/import/module/:id"
+              element={<ImportModuleDocs {...{ manifest }} />}
+            />
+            <Route path="*" element={<NoMatch />} />
+          </Routes>
+        </Box>
+      </Box>
+    </>
   );
 }
 

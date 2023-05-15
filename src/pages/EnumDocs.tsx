@@ -23,7 +23,7 @@ const Title = styled.h1`
 const SectionTitle = styled.h3``;
 
 const SchemaLink = styled.span`
-  color: ${(props) => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors.bg[50]};
   display: flex;
   align-items: center;
 
@@ -34,7 +34,7 @@ const SchemaLink = styled.span`
 `;
 
 const SchemaText = styled.h6`
-  color: ${(props) => props.theme.colors[50]};
+  color: ${(props) => props.theme.colors.bg[50]};
   font-weight: 100;
 `;
 

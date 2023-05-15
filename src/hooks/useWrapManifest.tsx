@@ -27,15 +27,14 @@ export function useWrapManifest(
   const client = props.client;
 
   // Initialize the UseWrapManifestState
-  const { state, dispatch } = useStateReducer<UseWrapManifestState>(
-    INITIAL_INVOKE_STATE
-  );
+  const { state, dispatch } =
+    useStateReducer<UseWrapManifestState>(INITIAL_INVOKE_STATE);
 
   React.useEffect(() => {
     const execute = async () => {
       dispatch({ loading: true });
       const result = await client.getManifest(props.uri);
-  
+
       if (result.ok) {
         dispatch({ manifest: result.value, loading: false });
       } else {
