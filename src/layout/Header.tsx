@@ -10,12 +10,16 @@ export default function Header() {
       component="header"
       sx={{
         alignItems: "center",
+        backgroundColor: "bg.1000",
         borderBottom: `1px solid`,
         borderBottomColor: "fg.100",
         color: "fg.900",
         height: HEADER_HEIGHT,
         justifyContent: "space-between",
         px: 3,
+        position: "sticky",
+        top: 0,
+        zIndex: 1,
       }}
     >
       <Input

@@ -215,11 +215,14 @@ export default function Sidebar() {
           }}
         >
           {uniswapV3Uri && (
-            <Stack direction="row" sx={{ justifyContent: "space-between" }}>
+            <Stack
+              direction="row"
+              sx={{ alignItems: "center", justifyContent: "space-between" }}
+            >
               <Typography sx={{ color: "text.disabled", fontSize: 12 }}>
                 URI
               </Typography>
-              <Stack spacing={1} direction="row">
+              <Stack spacing={1} direction="row" sx={{ alignItems: "center" }}>
                 <Typography
                   sx={{ color: "fg.1000", fontWeight: 500, fontSize: 12 }}
                 >
@@ -230,24 +233,40 @@ export default function Sidebar() {
             </Stack>
           )}
           {manifest.type && (
-            <Stack direction="row" sx={{ justifyContent: "space-between" }}>
+            <Stack
+              direction="row"
+              sx={{ alignItems: "center", justifyContent: "space-between" }}
+            >
               <Typography sx={{ color: "text.disabled", fontSize: 12 }}>
                 Type
               </Typography>
               <Typography
-                sx={{ color: "fg.1000", fontWeight: 500, fontSize: 12 }}
+                sx={{
+                  color: "fg.1000",
+                  fontWeight: 500,
+                  fontSize: 12,
+                  alignItems: "center",
+                }}
               >
                 {manifest.type}
               </Typography>
             </Stack>
           )}
           {importedModules.length > 0 && (
-            <Stack direction="row" sx={{ justifyContent: "space-between" }}>
+            <Stack
+              direction="row"
+              sx={{ alignItems: "center", justifyContent: "space-between" }}
+            >
               <Typography sx={{ color: "text.disabled", fontSize: 12 }}>
                 Dependencies
               </Typography>
               <Typography
-                sx={{ color: "fg.1000", fontWeight: 500, fontSize: 12 }}
+                sx={{
+                  color: "fg.1000",
+                  fontWeight: 500,
+                  fontSize: 12,
+                  alignItems: "center",
+                }}
               >
                 {importedModules.length}
               </Typography>
@@ -256,9 +275,13 @@ export default function Sidebar() {
         </Stack>
 
         <Stack spacing={1} sx={{ mt: 3 }}>
-          <SidebarSection name="README" onClick={() => navigate("/")} />
+          <SidebarSection
+            name="README"
+            slug="readme"
+            onClick={() => navigate("/")}
+          />
           {examples && (
-            <SidebarSection name="Examples" initOpen>
+            <SidebarSection name="Examples" slug="examples" initOpen>
               {examples.map((i, index) => (
                 <SidebarItem
                   key={index}
@@ -270,26 +293,31 @@ export default function Sidebar() {
             </SidebarSection>
           )}
           {functions.length > 0 && (
-            <SidebarSection name="Functions">
-              {functions.map((i, index) => (
-                <SidebarItem
-                  key={index}
-                  onClick={() => navigate("/function/" + i.name)}
-                >
-                  {i.name}
-                </SidebarItem>
-              ))}
-            </SidebarSection>
+            <SidebarSection
+              name="Functions"
+              slug="functions"
+              onClick={() => navigate("/functions")}
+            />
+            // <SidebarSection name="Functions" slug="functions">
+            //   {functions.map((i, index) => (
+            //     <SidebarItem
+            //       key={index}
+            //       onClick={() => navigate("/functions/")}
+            //     >
+            //       {i.name}
+            //     </SidebarItem>
+            //   ))}
+            // </SidebarSection>
           )}
           {env && (
-            <SidebarSection name="Env">
+            <SidebarSection name="Env" slug="env">
               {env.properties?.map((i, index) => (
                 <SidebarItem key={index}>{i.name}</SidebarItem>
               ))}
             </SidebarSection>
           )}
           {objects.length > 0 && (
-            <SidebarSection name="Objects">
+            <SidebarSection name="Objects" slug="objects">
               {objects.map((i, index) => (
                 <SidebarItem
                   key={index}
@@ -301,7 +329,7 @@ export default function Sidebar() {
             </SidebarSection>
           )}
           {enums.length > 0 && (
-            <SidebarSection name="Enums">
+            <SidebarSection name="Enums" slug="enums">
               {enums.map((i, index) => (
                 <SidebarItem
                   key={index}
@@ -313,7 +341,7 @@ export default function Sidebar() {
             </SidebarSection>
           )}
           {importedObjects.length > 0 && (
-            <SidebarSection name="Import Objects">
+            <SidebarSection name="Import Objects" slug="dependencies">
               {importedObjects.map((i, index) => (
                 <SidebarItem
                   key={index}
@@ -325,7 +353,7 @@ export default function Sidebar() {
             </SidebarSection>
           )}
           {importedEnums.length > 0 && (
-            <SidebarSection name="Import Enums">
+            <SidebarSection name="Import Enums" slug="dependencies">
               {importedEnums.map((i, index) => (
                 <SidebarItem
                   key={index}
@@ -337,7 +365,7 @@ export default function Sidebar() {
             </SidebarSection>
           )}
           {importedModules.length > 0 && (
-            <SidebarSection name="Import Modules">
+            <SidebarSection name="Import Modules" slug="dependencies">
               {importedModules.map((i, index) => (
                 <SidebarItem
                   key={index}
@@ -348,7 +376,11 @@ export default function Sidebar() {
               ))}
             </SidebarSection>
           )}
-          <SidebarSection name="Schema" onClick={() => navigate("/schema")} />
+          <SidebarSection
+            name="Schema"
+            slug="schema"
+            onClick={() => navigate("/schema")}
+          />
         </Stack>
       </Paper>
     </SidebarContainer>

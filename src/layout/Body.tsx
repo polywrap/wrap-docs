@@ -16,15 +16,12 @@ function Body() {
   return (
     <Box sx={{ ml: SIDEBAR_WIDTH }}>
       <Header />
-      <Box
-        component="main"
-        sx={{ position: "relative", px: [4, 6, 8], pt: 14 }}
-      >
+      <Box component="main" sx={{ position: "relative", p: 4 }}>
         <Routes>
           <Route path="/" element={<Readme />} />
           <Route path="/schema" element={<Schema />} />
           <Route path="/example/:id" element={<Example />} />
-          <Route path="/function/:id" element={<FunctionDocs />} />
+          <Route path="/functions" element={<FunctionDocs />} />
           <Route path="/object/:id" element={<ObjectDocs />} />
           <Route path="/import/object/:id" element={<ObjectDocs import />} />
           <Route path="/enum/:id" element={<EnumDocs />} />
