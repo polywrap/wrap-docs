@@ -1,10 +1,10 @@
-import { Box, Link, Stack, Typography, useTheme } from "@mui/material";
-import RenderSchema from "../components/RenderSchema";
+import { Box, Link, Stack, Typography, alpha, useTheme } from "@mui/material";
 import {
   MethodDefinition,
   PropertyDefinition,
 } from "@polywrap/wrap-manifest-types-js";
 import { themes } from "../styles/palette";
+import FunctionPreview from "./FunctionPreview";
 
 interface FunctionSectionProps extends MethodDefinition {
   args?: PropertyDefinition[];
@@ -12,43 +12,56 @@ interface FunctionSectionProps extends MethodDefinition {
 }
 
 export default function FunctionSection({
-  name,
-  comment,
   args,
   index,
+  ...props
 }: FunctionSectionProps) {
+  const { name, comment } = props;
+
   const theme = useTheme();
   const { mode } = theme.palette;
 
   return (
     <Box sx={{ pt: index === 0 ? 0 : 12 }} id={name}>
-      <Stack direction="row" spacing={1}>
-        <Typography
-          variant="h4"
-          component="h2"
-          sx={{ color: themes[mode].fg[1000] }}
-        >
-          {name}
-        </Typography>
-        <Link href={`#/functions#${name}`} underline="none">
+      <Link
+        href={`#/functions#${name}`}
+        underline="none"
+        sx={{
+          "&:hover .function": { color: themes[mode].fg[1000] },
+          "&:hover .hash": { color: themes[mode].iris[500] },
+        }}
+      >
+        <Stack direction="row" spacing={1}>
           <Typography
             variant="h4"
             component="h2"
+            className="function"
+            sx={{
+              color: themes[mode].fg[900],
+              transition: `color 0.25s ease-in-out`,
+            }}
+          >
+            {name}
+          </Typography>
+          <Typography
+            variant="h4"
+            component="h2"
+            className="hash"
             sx={{
               color: themes[mode].iris[800],
               transition: `color 0.25s ease-in-out`,
-              "&:hover": { color: themes[mode].iris[500] },
             }}
           >
             #
           </Typography>
-        </Link>
-      </Stack>
+        </Stack>
+      </Link>
       {comment && (
         <Typography sx={{ color: themes[mode].fg[700], mt: 4 }}>
           {comment}
         </Typography>
       )}
+      <FunctionPreview {...props} args={args} />
       {args && args.length > 0 && (
         <>
           <Typography variant="h6" component="h3" sx={{ mt: 4 }}>
@@ -63,18 +76,42 @@ export default function FunctionSection({
                   borderLeft: `1px solid ${themes[mode].iris[500]}`,
                 }}
               >
-                <Stack direction="row" spacing={2}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{ alignItems: "center" }}
+                >
                   <Typography sx={{ fontWeight: 900 }}>
                     {argument.name}
                   </Typography>
-                  <Typography
-                    sx={{
-                      color: themes[mode].green,
-                      fontFamily: "monospace",
-                    }}
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{ alignItems: "center" }}
                   >
-                    {argument.type}
-                  </Typography>
+                    {!argument.required && (
+                      <Typography sx={{ color: "fg.500", fontSize: 10 }}>
+                        optional
+                      </Typography>
+                    )}
+                    <Typography
+                      sx={{
+                        color: themes[mode].green,
+                        fontFamily: "monospace",
+                      }}
+                    >
+                      {argument.type}
+                      {argument.required && (
+                        <Typography
+                          color="#fff"
+                          component="span"
+                          fontFamily="monospace"
+                        >
+                          !
+                        </Typography>
+                      )}
+                    </Typography>
+                  </Stack>
                 </Stack>
                 <Typography sx={{ color: themes[mode].fg[500], mt: 1 }}>
                   {argument.comment}
