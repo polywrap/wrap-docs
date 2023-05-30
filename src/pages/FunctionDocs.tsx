@@ -12,6 +12,7 @@ import { getTypeNameRoute } from "../utils/getTypeNameRoute";
 import { Box, Grid, Link, Typography, alpha, useTheme } from "@mui/material";
 import FunctionSection from "../components/FunctionSection";
 import { themes } from "../styles/palette";
+import FunctionListing from "../components/FunctionListing";
 
 function FunctionDocs() {
   const navigate = useNavigate();
@@ -53,43 +54,7 @@ function FunctionDocs() {
         })}
       </Grid>
       <Grid item xs={12} md={4}>
-        <Box sx={{ bgcolor: themes[mode].iris[900], p: 3, borderRadius: 2 }}>
-          <Typography
-            variant="subtitle1"
-            component="h3"
-            sx={{ fontWeight: 800, mb: 1 }}
-          >
-            Functions
-          </Typography>
-          {methods.map((method, i) => {
-            return (
-              <Box key={i}>
-                <Link
-                  href={`#/functions#${method.name}`}
-                  underline="none"
-                  sx={{
-                    borderLeft: `1px solid transparent`,
-                    display: "block",
-                    px: 1,
-                    py: 0.5,
-                    width: "100%",
-                    "&:hover": {
-                      borderColor: themes[mode].iris[500],
-                      bgcolor: alpha("#fff", 0.05),
-                    },
-                  }}
-                >
-                  <Typography
-                    component="span"
-                    sx={{ color: alpha("#fff", 0.7), fontSize: 12 }}
-                  >
-                    {method.name}
-                  </Typography>
-                </Link>
-              </Box>
-            );
-          })}
-        </Box>
+        <FunctionListing methods={methods} />
       </Grid>
     </Grid>
   );
