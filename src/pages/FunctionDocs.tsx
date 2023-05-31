@@ -106,7 +106,7 @@ function FunctionDocs(props: FunctionDocsProps) {
           fontSize: "large",
         }}
       >
-        {method.comment}asdf
+        {method.comment}
       </Box>
 
       <RenderSchema

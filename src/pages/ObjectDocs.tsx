@@ -1,5 +1,3 @@
-import React from "react";
-import styled from "styled-components";
 import { UnfoldMore } from "@mui/icons-material";
 import { useParams, useNavigate } from "react-router-dom";
 import { ImportedObjectDefinition } from "@polywrap/wrap-manifest-types-js";
@@ -9,51 +7,8 @@ import ReferenceSection from "../components/ReferenceSection";
 import { getTypeNameRoute } from "../utils/getTypeNameRoute";
 import { getTypeRefRoutes } from "../utils/getTypeRefRoutes";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Title = styled.h1`
-  font-weight: 100;
-  font-stretch: expanded;
-`;
-
-const SchemaLink = styled.span`
-  color: ${(props) => props.theme.colors.bg[50]};
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-`;
-
-const SchemaText = styled.h6`
-  color: ${(props) => props.theme.colors.bg[50]};
-  font-weight: 100;
-`;
-
-const Description = styled.h2`
-  font-weight: 100;
-  font-size: large;
-`;
-
-const SectionTitle = styled.h3``;
-
-const PropertyList = styled.ul`
-  list-style: circle;
-  line-height: 1.5em;
-`;
-
-const PropertyName = styled.span`
-  font-kerning: none;
-  letter-spacing: 1px;
-  font-weight: bold;
-`;
+import { Box, Stack, Typography, useTheme } from "@mui/material";
+import { themes } from "../styles/palette";
 
 interface ObjectDocsProps {
   import?: boolean;
@@ -64,6 +19,9 @@ function ObjectDocs(props: ObjectDocsProps) {
   const navigate = useNavigate();
   const { manifest } = props;
   const { id } = useParams<"id">();
+
+  const theme = useTheme();
+  const { mode } = theme.palette;
 
   const abi = manifest?.abi;
 
@@ -88,19 +46,55 @@ function ObjectDocs(props: ObjectDocsProps) {
   const refRoutes = getTypeRefRoutes(object.type, abi);
 
   return (
-    <>
-      <Header>
-        <Title>
+    <Stack
+      gap={4}
+      sx={{
+        pt: 4,
+      }}
+    >
+      <Stack
+        sx={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Box
+          component="h1"
+          sx={{
+            mt: 0,
+            mb: 0,
+          }}
+        >
           Object: <b>{object.type}</b>
-        </Title>
-        <SchemaLink
+        </Box>
+        <Box
+          component="span"
+          sx={{
+            color: themes[mode].fg[50],
+            display: "flex",
+            alignItems: "center",
+            ":hover": {
+              textDecoration: "underline",
+              cursor: "pointer",
+            },
+          }}
           onClick={() => navigate("../schema")}
         >
-          <SchemaText>schema</SchemaText>
+          <span>schema</span>
           <UnfoldMore />
-        </SchemaLink>
-      </Header>
-      {object?.comment && <Description>{object.comment}</Description>}
+        </Box>
+      </Stack>
+
+      <Box
+        sx={{
+          fontWeight: 100,
+          fontSize: "large",
+        }}
+      >
+        {object.comment}
+      </Box>
+
       <RenderSchema
         objects={[object]}
         onTypeNameClick={(name) => {
@@ -111,32 +105,67 @@ function ObjectDocs(props: ObjectDocsProps) {
           }
         }}
       />
+
       {props.import && (
-        <>
-          <SectionTitle>URI</SectionTitle>
+        <Box>
+          <Box
+            component="h3"
+            sx={{
+              mt: 0,
+              mb: 0,
+            }}
+          >
+            URI
+          </Box>
           {(object as ImportedObjectDefinition).uri}
-        </>
+        </Box>
       )}
+
       {object?.properties?.length && (
-        <>
-          <SectionTitle>Properties</SectionTitle>
-          <PropertyList>
+        <Box>
+          <Box
+            component="h3"
+            sx={{
+              mt: 0,
+              mb: 0,
+            }}
+          >
+            Properties
+          </Box>
+          <Box
+            component="ul"
+            sx={{
+              listStyle: "circle",
+              lineHeight: 1.5,
+            }}
+          >
             {object.properties.map((property) => {
               const required = property.required;
               return (
                 <li>
-                  <PropertyName>{property.name}</PropertyName>
+                  <Box
+                    component="span"
+                    sx={{
+                      fontKerning: "none",
+                      letterSpacing: "1px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {property.name}
+                  </Box>
                   {!required && " (optional)"}
-                  {" - "}
-                  {property.comment || "no comment."}
+                  {property.comment
+                    ? ` - ${property.comment}`
+                    : " - no comment"}
                 </li>
               );
             })}
-          </PropertyList>
-        </>
+          </Box>
+        </Box>
       )}
+
       <ReferenceSection refRoutes={refRoutes} />
-    </>
+    </Stack>
   );
 }
 
