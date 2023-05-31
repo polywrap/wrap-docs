@@ -30,7 +30,7 @@ function Body(props: BodyProps) {
         <Header />
         <Box
           component="main"
-          sx={{ position: "relative", px: [4, 6, 8], pt: 14 }}
+          sx={{ position: "relative", px: [4, 6, 8] }}
         >
           <Routes>
             <Route

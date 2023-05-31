@@ -6,10 +6,11 @@ import {
   EnumDefinition,
   ImportedObjectDefinition,
   ImportedEnumDefinition,
-  ImportedModuleDefinition
+  ImportedModuleDefinition,
 } from "@polywrap/wrap-manifest-types-js";
 
 import { trimPropType } from "../utils/trimPropType";
+import { Box } from "@mui/material";
 
 const globalStyles = `
   font-size: 14px;
@@ -86,10 +87,10 @@ function RenderSchema(props: RenderSchemaProps) {
     withModuleType,
     withComments,
     onTypeNameClick,
-    onFuncNameClick
+    onFuncNameClick,
   } = props;
 
-  const RenderTypeName = (props: { type: string, noClick?: boolean }) => {
+  const RenderTypeName = (props: { type: string; noClick?: boolean }) => {
     const { noClick } = props;
 
     let type = props.type;
@@ -104,29 +105,31 @@ function RenderSchema(props: RenderSchemaProps) {
     }
 
     return (
-      <>
-      {prefix && <SpecialChar>{prefix}</SpecialChar>}
-      {onTypeNameClick && !noClick ? (
-        <ClickableTypeName onClick={() => onTypeNameClick(type)}>
-          {type}
-        </ClickableTypeName>
-      ) : (
-        <TypeName>{type}</TypeName>
-      )}
-      {postfix && <SpecialChar>{postfix}</SpecialChar>}
-      </>
+      <Box component="span">
+        {prefix && <SpecialChar>{prefix}</SpecialChar>}
+        {onTypeNameClick && !noClick ? (
+          <ClickableTypeName onClick={() => onTypeNameClick(type)}>
+            {type}
+          </ClickableTypeName>
+        ) : (
+          <TypeName>{type}</TypeName>
+        )}
+        {postfix && <SpecialChar>{postfix}</SpecialChar>}
+      </Box>
     );
   };
 
   const RenderWhitespace = (props: { indent: number }) => (
-    <>{[...Array(props.indent)].map(() => (
-      <>&nbsp;&nbsp;&nbsp;&nbsp;</>
-    ))}</>
+    <Box component="span">
+      {[...Array(props.indent)].map(() => (
+        <>&nbsp;&nbsp;&nbsp;&nbsp;</>
+      ))}
+    </Box>
   );
 
   const methodIndent = withModuleType ? 1 : 0;
 
-  const RenderComment = (props: { indent: number, comment: string }) => {
+  const RenderComment = (props: { indent: number; comment: string }) => {
     let comment = props.comment;
     const maxCommentLen = 60;
     const commentParts = [];
@@ -144,260 +147,293 @@ function RenderSchema(props: RenderSchemaProps) {
     }
 
     return (
-      <>
-      <RenderWhitespace indent={props.indent} />
-      <Comment>"""<br/></Comment>
-      {commentParts.map((part) => (
-        <>
+      <Box>
         <RenderWhitespace indent={props.indent} />
-        <Comment>{part}<br/></Comment>
-        </>
-      ))}
-      <RenderWhitespace indent={props.indent} />
-      <Comment>"""<br/></Comment>
-      </>
-    );
-  }
-
-  return (
-    <>
-    {withModuleType && methods?.length && (
-      <>
-      <Keyword>{"type "}</Keyword>
-      <TypeName>Module</TypeName>
-      <SpecialChar>{" {"}</SpecialChar>
-      <br/>
-      </>
-    )}
-    {methods?.length && methods.map((method, index) => (
-      <>
-      {withComments && method.comment && (
-        <RenderComment comment={method.comment} indent={methodIndent} />
-      )}
-      <RenderWhitespace indent={methodIndent} />
-      {onFuncNameClick ? (
-        <ClickablePropName onClick={() => onFuncNameClick(method.name || "")}>
-          {method.name}
-        </ClickablePropName>
-      ) : (
-        <PropName>{method.name}</PropName>
-      )}
-      {method.arguments?.length && (
-        <>
-        <SpecialChar>{"("}</SpecialChar><br/>
-        {method.arguments.map((argument) => (
+        <Comment>
+          """
+          <br />
+        </Comment>
+        {commentParts.map((part) => (
           <>
-          {withComments && argument.comment && (
-            <RenderComment comment={argument.comment} indent={methodIndent + 1} />
-          )}
-          <span>
-            <RenderWhitespace indent={methodIndent + 1} />
-            <ArgName>{argument.name}</ArgName>
-            <SpecialChar>{": "}</SpecialChar>
-            <RenderTypeName type={argument.type} />
-            {argument.required && <SpecialChar>{"!"}</SpecialChar>}
-            <br/>
-          </span>
+            <RenderWhitespace indent={props.indent} />
+            <Comment>
+              {part}
+              <br />
+            </Comment>
           </>
         ))}
-        <RenderWhitespace indent={methodIndent} />
-        <SpecialChar>{")"}</SpecialChar>
-        </>
-      )}{method.return && (
+        <RenderWhitespace indent={props.indent} />
+        <Comment>
+          """
+          <br />
+        </Comment>
+      </Box>
+    );
+  };
+
+  return (
+    <Box>
+      {withModuleType && methods?.length && (
         <>
-        <SpecialChar>{": "}</SpecialChar>
-        <RenderTypeName type={method.return.type} />
-        {method.return.required && <SpecialChar>{"!"}</SpecialChar>}
+          <Keyword>{"type "}</Keyword>
+          <TypeName>Module</TypeName>
+          <SpecialChar>{" {"}</SpecialChar>
+          <br />
         </>
-      )}<br/>
-      {index < methods.length - 1 && <br/>}
-      </>
-    ))}
-    {withModuleType && methods?.length && (
-      <>
-      <SpecialChar>{"}"}</SpecialChar>
-      <br/>
-      </>
-    )}
-    {objects?.length && objects.map((object, index) => (
-      <>
-      {methods?.length && <br/>}
-      {withComments && object.comment && (
-        <RenderComment comment={object.comment} indent={0} />
       )}
-      <Keyword>{"type "}</Keyword>
-      {onTypeNameClick ? (
-        <ClickableTypeName onClick={() => onTypeNameClick(object.type)}>
-          {object.type}
-        </ClickableTypeName>
-      ) : (
-        <RenderTypeName type={object.type} noClick />
-      )}
-      <SpecialChar>{" {"}</SpecialChar>
-      <br/>
-      {object.properties?.map((property) => (
-        <>
-        {withComments && property.comment && (
-          <RenderComment comment={property.comment} indent={1} />
-        )}
-        <span>
-          <RenderWhitespace indent={1} />
-          <PropName>{property.name}</PropName>
-          <SpecialChar>{": "}</SpecialChar>
-          <RenderTypeName type={property.type} />
-          {property.required && <SpecialChar>{"!"}</SpecialChar>}
-          <br/>
-        </span>
-        </>
-      ))}
-      <SpecialChar>{"}"}</SpecialChar>
-      <br/>
-      {index < objects.length - 1 && <br/>}
-      </>
-    ))}
-    {objects?.length && <br />}
-    {enums?.length && enums.map((enumDef, index) => (
-      <>
-      <Keyword>{"enum "}</Keyword>
-      {onTypeNameClick ? (
-        <ClickableTypeName onClick={() => onTypeNameClick(enumDef.type)}>
-          {enumDef.type}
-        </ClickableTypeName>
-      ) : (
-        <RenderTypeName type={enumDef.type} noClick />
-      )}
-      <SpecialChar>{" {"}</SpecialChar>
-      <br/>
-      {enumDef.constants?.map((constant) => (
-        <span>
-          <RenderWhitespace indent={1} />
-          <ConstantName>{constant}</ConstantName>
-          <br/>
-        </span>
-      ))}
-      <SpecialChar>{"}"}</SpecialChar>
-      <br/>
-      {index < enums.length - 1 && <br/>}
-      </>
-    ))}
-    {enums?.length && <br />}
-    {importedObjects?.length && importedObjects.map((object, index) => (
-      <>
-      {withComments && object.comment && (
-        <RenderComment comment={object.comment} indent={0} />
-      )}
-      <Keyword>{"type "}</Keyword>
-      {onTypeNameClick ? (
-        <ClickableTypeName onClick={() => onTypeNameClick(object.type)}>
-          {object.type}
-        </ClickableTypeName>
-      ) : (
-        <RenderTypeName type={object.type} noClick />
-      )}
-      <SpecialChar>{" {"}</SpecialChar>
-      <br/>
-      {object.properties?.map((property) => (
-        <>
-        {withComments && property.comment && (
-          <RenderComment comment={property.comment} indent={1} />
-        )}
-        <span>
-          <RenderWhitespace indent={1} />
-          <PropName>{property.name}</PropName>
-          <SpecialChar>{": "}</SpecialChar>
-          <RenderTypeName type={property.type} />
-          {property.required && <SpecialChar>{"!"}</SpecialChar>}
-          <br/>
-        </span>
-        </>
-      ))}
-      <SpecialChar>{"}"}</SpecialChar>
-      <br/>
-      {index < importedObjects.length - 1 && <br/>}
-      </>
-    ))}
-    {importedObjects?.length && <br />}
-    {importedEnums?.length && importedEnums.map((enumDef, index) => (
-      <>
-      <Keyword>{"enum "}</Keyword>
-      {onTypeNameClick ? (
-        <ClickableTypeName onClick={() => onTypeNameClick(enumDef.type)}>
-          {enumDef.type}
-        </ClickableTypeName>
-      ) : (
-        <RenderTypeName type={enumDef.type} noClick />
-      )}
-      <SpecialChar>{" {"}</SpecialChar>
-      <br/>
-      {enumDef.constants?.map((constant) => (
-        <span>
-          <RenderWhitespace indent={1} />
-          <ConstantName>{constant}</ConstantName>
-          <br/>
-        </span>
-      ))}
-      <SpecialChar>{"}"}</SpecialChar>
-      <br/>
-      {index < importedEnums.length - 1 && <br/>}
-      </>
-    ))}
-    {importedModules?.length && importedModules.map((module, index) => (
-      <>
-      <Keyword>{"type "}</Keyword>
-      {onTypeNameClick ? (
-        <ClickableTypeName onClick={() => onTypeNameClick(module.type)}>
-          {module.type}
-        </ClickableTypeName>
-      ) : (
-        <RenderTypeName type={module.type} noClick />
-      )}
-      <SpecialChar>{" {"}</SpecialChar>
-      <br/>
-      {module.methods?.length && module.methods.map((method, index, methods) => (
-        <>
-        {withComments && method.comment && (
-          <RenderComment comment={method.comment} indent={1} />
-        )}
-        <RenderWhitespace indent={1} />
-        <PropName>{method.name}</PropName>
-        {method.arguments?.length && (
+      {methods?.length &&
+        methods.map((method, index) => (
           <>
-          <SpecialChar>{"("}</SpecialChar><br/>
-          {method.arguments.map((argument) => (
-            <>
-            {withComments && argument.comment && (
-              <RenderComment comment={argument.comment} indent={2} />
+            {withComments && method.comment && (
+              <RenderComment comment={method.comment} indent={methodIndent} />
             )}
-            <span>
-              <RenderWhitespace indent={2} />
-              <ArgName>{argument.name}</ArgName>
-              <SpecialChar>{": "}</SpecialChar>
-              <RenderTypeName type={argument.type} />
-              {argument.required && <SpecialChar>{"!"}</SpecialChar>}
-              <br/>
-            </span>
-            </>
-          ))}
-          <RenderWhitespace indent={1} />
-          <SpecialChar>{")"}</SpecialChar>
+            <RenderWhitespace indent={methodIndent} />
+            {onFuncNameClick ? (
+              <ClickablePropName
+                onClick={() => onFuncNameClick(method.name || "")}
+              >
+                {method.name}
+              </ClickablePropName>
+            ) : (
+              <PropName>{method.name}</PropName>
+            )}
+            {method.arguments?.length && (
+              <>
+                <SpecialChar>{"("}</SpecialChar>
+                <br />
+                {method.arguments.map((argument) => (
+                  <>
+                    {withComments && argument.comment && (
+                      <RenderComment
+                        comment={argument.comment}
+                        indent={methodIndent + 1}
+                      />
+                    )}
+                    <span>
+                      <RenderWhitespace indent={methodIndent + 1} />
+                      <ArgName>{argument.name}</ArgName>
+                      <SpecialChar>{": "}</SpecialChar>
+                      <RenderTypeName type={argument.type} />
+                      {argument.required && <SpecialChar>{"!"}</SpecialChar>}
+                      <br />
+                    </span>
+                  </>
+                ))}
+                <RenderWhitespace indent={methodIndent} />
+                <SpecialChar>{")"}</SpecialChar>
+              </>
+            )}
+            {method.return && (
+              <>
+                <SpecialChar>{": "}</SpecialChar>
+                <RenderTypeName type={method.return.type} />
+                {method.return.required && <SpecialChar>{"!"}</SpecialChar>}
+              </>
+            )}
+            <br />
+            {index < methods.length - 1 && <br />}
           </>
-        )}{method.return && (
-          <>
-          <SpecialChar>{": "}</SpecialChar>
-          <RenderTypeName type={method.return.type} />
-          {method.return.required && <SpecialChar>{"!"}</SpecialChar>}
-          </>
-        )}
-        <br/>
-        {index < methods.length - 1 && <br/>}
+        ))}
+      {withModuleType && methods?.length && (
+        <>
+          <SpecialChar>{"}"}</SpecialChar>
+          <br />
         </>
-      ))}
-      <SpecialChar>{"}"}</SpecialChar>
-      <br/>
-      {index < importedModules.length - 1 && <br/>}
-      </>
-    ))}
-    </>
+      )}
+      {objects?.length &&
+        objects.map((object, index) => (
+          <>
+            {methods?.length && <br />}
+            {withComments && object.comment && (
+              <RenderComment comment={object.comment} indent={0} />
+            )}
+            <Keyword>{"type "}</Keyword>
+            {onTypeNameClick ? (
+              <ClickableTypeName onClick={() => onTypeNameClick(object.type)}>
+                {object.type}
+              </ClickableTypeName>
+            ) : (
+              <RenderTypeName type={object.type} noClick />
+            )}
+            <SpecialChar>{" {"}</SpecialChar>
+            <br />
+            {object.properties?.map((property) => (
+              <>
+                {withComments && property.comment && (
+                  <RenderComment comment={property.comment} indent={1} />
+                )}
+                <span>
+                  <RenderWhitespace indent={1} />
+                  <PropName>{property.name}</PropName>
+                  <SpecialChar>{": "}</SpecialChar>
+                  <RenderTypeName type={property.type} />
+                  {property.required && <SpecialChar>{"!"}</SpecialChar>}
+                  <br />
+                </span>
+              </>
+            ))}
+            <SpecialChar>{"}"}</SpecialChar>
+            <br />
+            {index < objects.length - 1 && <br />}
+          </>
+        ))}
+      {objects?.length && <br />}
+      {enums?.length &&
+        enums.map((enumDef, index) => (
+          <>
+            <Keyword>{"enum "}</Keyword>
+            {onTypeNameClick ? (
+              <ClickableTypeName onClick={() => onTypeNameClick(enumDef.type)}>
+                {enumDef.type}
+              </ClickableTypeName>
+            ) : (
+              <RenderTypeName type={enumDef.type} noClick />
+            )}
+            <SpecialChar>{" {"}</SpecialChar>
+            <br />
+            {enumDef.constants?.map((constant) => (
+              <span>
+                <RenderWhitespace indent={1} />
+                <ConstantName>{constant}</ConstantName>
+                <br />
+              </span>
+            ))}
+            <SpecialChar>{"}"}</SpecialChar>
+            <br />
+            {index < enums.length - 1 && <br />}
+          </>
+        ))}
+      {enums?.length && <br />}
+      {importedObjects?.length &&
+        importedObjects.map((object, index) => (
+          <>
+            {withComments && object.comment && (
+              <RenderComment comment={object.comment} indent={0} />
+            )}
+            <Keyword>{"type "}</Keyword>
+            {onTypeNameClick ? (
+              <ClickableTypeName onClick={() => onTypeNameClick(object.type)}>
+                {object.type}
+              </ClickableTypeName>
+            ) : (
+              <RenderTypeName type={object.type} noClick />
+            )}
+            <SpecialChar>{" {"}</SpecialChar>
+            <br />
+            {object.properties?.map((property) => (
+              <>
+                {withComments && property.comment && (
+                  <RenderComment comment={property.comment} indent={1} />
+                )}
+                <span>
+                  <RenderWhitespace indent={1} />
+                  <PropName>{property.name}</PropName>
+                  <SpecialChar>{": "}</SpecialChar>
+                  <RenderTypeName type={property.type} />
+                  {property.required && <SpecialChar>{"!"}</SpecialChar>}
+                  <br />
+                </span>
+              </>
+            ))}
+            <SpecialChar>{"}"}</SpecialChar>
+            <br />
+            {index < importedObjects.length - 1 && <br />}
+          </>
+        ))}
+      {importedObjects?.length && <br />}
+      {importedEnums?.length &&
+        importedEnums.map((enumDef, index) => (
+          <>
+            <Keyword>{"enum "}</Keyword>
+            {onTypeNameClick ? (
+              <ClickableTypeName onClick={() => onTypeNameClick(enumDef.type)}>
+                {enumDef.type}
+              </ClickableTypeName>
+            ) : (
+              <RenderTypeName type={enumDef.type} noClick />
+            )}
+            <SpecialChar>{" {"}</SpecialChar>
+            <br />
+            {enumDef.constants?.map((constant) => (
+              <span>
+                <RenderWhitespace indent={1} />
+                <ConstantName>{constant}</ConstantName>
+                <br />
+              </span>
+            ))}
+            <SpecialChar>{"}"}</SpecialChar>
+            <br />
+            {index < importedEnums.length - 1 && <br />}
+          </>
+        ))}
+      {importedModules?.length &&
+        importedModules.map((module, index) => (
+          <>
+            <Keyword>{"type "}</Keyword>
+            {onTypeNameClick ? (
+              <ClickableTypeName onClick={() => onTypeNameClick(module.type)}>
+                {module.type}
+              </ClickableTypeName>
+            ) : (
+              <RenderTypeName type={module.type} noClick />
+            )}
+            <SpecialChar>{" {"}</SpecialChar>
+            <br />
+            {module.methods?.length &&
+              module.methods.map((method, index, methods) => (
+                <>
+                  {withComments && method.comment && (
+                    <RenderComment comment={method.comment} indent={1} />
+                  )}
+                  <RenderWhitespace indent={1} />
+                  <PropName>{method.name}</PropName>
+                  {method.arguments?.length && (
+                    <>
+                      <SpecialChar>{"("}</SpecialChar>
+                      <br />
+                      {method.arguments.map((argument) => (
+                        <>
+                          {withComments && argument.comment && (
+                            <RenderComment
+                              comment={argument.comment}
+                              indent={2}
+                            />
+                          )}
+                          <span>
+                            <RenderWhitespace indent={2} />
+                            <ArgName>{argument.name}</ArgName>
+                            <SpecialChar>{": "}</SpecialChar>
+                            <RenderTypeName type={argument.type} />
+                            {argument.required && (
+                              <SpecialChar>{"!"}</SpecialChar>
+                            )}
+                            <br />
+                          </span>
+                        </>
+                      ))}
+                      <RenderWhitespace indent={1} />
+                      <SpecialChar>{")"}</SpecialChar>
+                    </>
+                  )}
+                  {method.return && (
+                    <>
+                      <SpecialChar>{": "}</SpecialChar>
+                      <RenderTypeName type={method.return.type} />
+                      {method.return.required && (
+                        <SpecialChar>{"!"}</SpecialChar>
+                      )}
+                    </>
+                  )}
+                  <br />
+                  {index < methods.length - 1 && <br />}
+                </>
+              ))}
+            <SpecialChar>{"}"}</SpecialChar>
+            <br />
+            {index < importedModules.length - 1 && <br />}
+          </>
+        ))}
+    </Box>
   );
 }
 

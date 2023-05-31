@@ -4,66 +4,14 @@ import { Launch, UnfoldMore } from "@mui/icons-material";
 
 import RenderSchema from "../components/RenderSchema";
 import { getTypeNameRoute } from "../utils/getTypeNameRoute";
+import { Box, Grid, Link, Typography, alpha, useTheme } from "@mui/material";
+import FunctionSection from "../components/FunctionSection";
+import { themes } from "../styles/palette";
+import FunctionListing from "../components/FunctionListing";
+
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
 import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
-import { useTheme } from "@mui/material";
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Title = styled.h1`
-  font-weight: 100;
-  font-stretch: expanded;
-`;
-
-const SchemaLink = styled.span`
-  color: ${(props) => props.theme.colors.bg[50]};
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-`;
-
-const SchemaText = styled.h6`
-  color: ${(props) => props.theme.colors.bg[50]};
-  font-weight: 100;
-`;
-
-const FunctionDescription = styled.h2`
-  font-weight: 100;
-  font-size: large;
-`;
-
-const SectionTitle = styled.h3``;
-
-const ArgumentList = styled.ul`
-  list-style: circle;
-  line-height: 1.5em;
-`;
-
-const ArgumentName = styled.span`
-  font-kerning: none;
-  letter-spacing: 1px;
-  font-weight: bold;
-`;
-
-const ExampleList = styled.ul`
-  list-style: none;
-  padding-left: 16px;
-`;
-
-const ExampleListItem = styled.li`
-  cursor: pointer;
-  &:hover {
-    text-decoration: underline;
-  }
-`;
+import { Stack } from "@mui/system";
 
 type ExampleRef = {
   slug: string;
@@ -76,8 +24,8 @@ type FunctionDocsProps = {
 };
 
 function FunctionDocs(props: FunctionDocsProps) {
-  const theme = useTheme();
   const navigate = useNavigate();
+  const theme = useTheme();
   const { manifest, docsManifest } = props;
   const { id } = useParams<"id">();
 
@@ -116,19 +64,51 @@ function FunctionDocs(props: FunctionDocsProps) {
   }
 
   return (
-    <>
-      <Header>
-        <Title>
+    <Stack
+      sx={{
+        paddingTop: 4,
+      }}
+      gap={4}
+    >
+      <Stack
+        direction="row"
+        justifyContent={"space-between"}
+        alignItems="center"
+      >
+        <Box
+          component="h1"
+          sx={{
+            mt: 0,
+            mb: 0,
+          }}
+        >
           Function: <b>{method.name}</b>
-        </Title>
-        <SchemaLink theme={theme} onClick={() => navigate("../schema")}>
-          <SchemaText>schema</SchemaText>
+        </Box>
+        <Stack
+          sx={{
+            flexDirection: "row",
+            alignItems: "center",
+            cursor: "pointer",
+            ":hover": {
+              textDecoration: "underline"
+            }
+          }}
+          onClick={() => navigate("../schema")}
+        >
+          <span>schema</span>
           <UnfoldMore />
-        </SchemaLink>
-      </Header>
-      {method?.comment && (
-        <FunctionDescription>{method.comment}</FunctionDescription>
-      )}
+        </Stack>
+      </Stack>
+
+      <Box
+        sx={{
+          fontWeight: 100,
+          fontSize: "large",
+        }}
+      >
+        {method.comment}asdf
+      </Box>
+
       <RenderSchema
         methods={[method]}
         onTypeNameClick={(name) => {
@@ -140,41 +120,85 @@ function FunctionDocs(props: FunctionDocsProps) {
         }}
       />
       {method?.arguments?.length && (
-        <>
-          <SectionTitle>Arguments</SectionTitle>
-          <ArgumentList>
+        <Box>
+          <Box
+            component="h3"
+            sx={{
+              mt: 0,
+              mb: 0,
+            }}
+          >
+            Arguments
+          </Box>
+          <Box
+            component={"ul"}
+            sx={{
+              listStyle: "circle",
+              lineHeight: "1.5",
+            }}
+          >
             {method.arguments.map((argument) => {
               const required = argument.required;
               return (
                 <li>
-                  <ArgumentName>{argument.name}</ArgumentName>
+                  <Box
+                    component="span"
+                    sx={{
+                      fontKerning: "none",
+                      letterSpacing: "1px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {argument.name}
+                  </Box>
                   {!required && " (optional)"}
                   {" - "}
                   {argument.comment || "no comment."}
                 </li>
               );
             })}
-          </ArgumentList>
-        </>
+          </Box>
+        </Box>
       )}
       {exampleRefs.length > 0 && (
-        <>
-          <SectionTitle>Examples</SectionTitle>
-          <ExampleList>
+        <Box>
+          <Box
+            component="h3"
+            sx={{
+              mt: 0,
+              mb: 0,
+            }}
+          >
+            Examples
+          </Box>
+          <Box
+            component="ul"
+            sx={{
+              listStyle: "none",
+              paddingLeft: 4,
+            }}
+          >
             {exampleRefs.map((example) => (
-              <ExampleListItem
+              <Box
+                component="li"
+                sx={{
+                  cursor: "pointer",
+                  ":hover": {
+                    textDecoration: "underline",
+                  },
+                }}
                 onClick={() => navigate("../example/" + example.slug)}
               >
                 <span style={{ display: "flex" }}>
                   <Launch style={{ paddingRight: "0.5em" }} />
                   {example.title}
                 </span>
-              </ExampleListItem>
+              </Box>
             ))}
-          </ExampleList>
-        </>
+          </Box>
+        </Box>
       )}
-    </>
+    </Stack>
   );
 }
 

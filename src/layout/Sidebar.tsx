@@ -55,8 +55,10 @@ const SidebarItem = ({ children, ...props }: BoxProps) => (
       fontSize: "smaller",
       paddingBottom: "5px",
       paddingTop: "5px",
+      paddingLeft: "5px",
+      paddingRight: "5px",
       "&:hover": {
-        bgcolor: "bg.300",
+        bgcolor: "fg.50",
       },
     }}
   >
@@ -258,7 +260,12 @@ export default function Sidebar(props: SidebarProps) {
             </Typography>
             <Stack spacing={1} direction="row">
               <Typography
-                sx={{ color: "fg.1000", fontWeight: 500, fontSize: 12 }}
+                sx={{
+                  color: "fg.1000",
+                  fontWeight: 500,
+                  fontSize: 12,
+                  alignItems: "center",
+                }}
               >
                 {wrapUri}
               </Typography>
@@ -278,12 +285,20 @@ export default function Sidebar(props: SidebarProps) {
           </Stack>
 
           {importedModules.length > 0 && (
-            <Stack direction="row" sx={{ justifyContent: "space-between" }}>
+            <Stack
+              direction="row"
+              sx={{ alignItems: "center", justifyContent: "space-between" }}
+            >
               <Typography sx={{ color: "text.disabled", fontSize: 12 }}>
                 Dependencies
               </Typography>
               <Typography
-                sx={{ color: "fg.1000", fontWeight: 500, fontSize: 12 }}
+                sx={{
+                  color: "fg.1000",
+                  fontWeight: 500,
+                  fontSize: 12,
+                  alignItems: "center",
+                }}
               >
                 {importedModules.length}
               </Typography>
@@ -293,7 +308,7 @@ export default function Sidebar(props: SidebarProps) {
 
         <Stack>
           {wrapHasReadmePages ? (
-            <SidebarSection name="README" initOpen>
+            <SidebarSection name="README" slug="readme" initOpen>
               {readmes.map((x) => (
                 <>
                   <SidebarItem
@@ -306,11 +321,15 @@ export default function Sidebar(props: SidebarProps) {
               ))}
             </SidebarSection>
           ) : (
-            <SidebarSection name="README" onClick={() => navigate("")} />
+            <SidebarSection
+              name="README"
+              slug="readme"
+              onClick={() => navigate("")}
+            />
           )}
 
           {wrapHasExamples && (
-            <SidebarSection name="Examples" initOpen>
+            <SidebarSection name="Examples" slug="examples" initOpen>
               {examples.map((i) => (
                 <SidebarItem
                   key={i.path}
@@ -323,7 +342,7 @@ export default function Sidebar(props: SidebarProps) {
           )}
 
           {functions.length > 0 && (
-            <SidebarSection name="Functions">
+            <SidebarSection name="Functions" slug="functions">
               {functions.map((i, index) => (
                 <SidebarItem
                   key={index}
@@ -336,7 +355,7 @@ export default function Sidebar(props: SidebarProps) {
           )}
 
           {env && (
-            <SidebarSection name="Env">
+            <SidebarSection name="Env" slug="env">
               {env.properties?.map((i) => (
                 <SidebarItem>{i.name}</SidebarItem>
               ))}
@@ -344,7 +363,7 @@ export default function Sidebar(props: SidebarProps) {
           )}
 
           {objects.length > 0 && (
-            <SidebarSection name="Objects">
+            <SidebarSection name="Objects" slug="objects">
               {objects.map((i, index) => (
                 <SidebarItem
                   key={index}
@@ -357,7 +376,7 @@ export default function Sidebar(props: SidebarProps) {
           )}
 
           {enums.length > 0 && (
-            <SidebarSection name="Enums">
+            <SidebarSection name="Enums" slug="enums">
               {enums.map((i, index) => (
                 <SidebarItem
                   key={index}
@@ -370,7 +389,7 @@ export default function Sidebar(props: SidebarProps) {
           )}
 
           {importedObjects.length > 0 && (
-            <SidebarSection name="Import Objects">
+            <SidebarSection name="Import Objects" slug="dependencies">
               {importedObjects.map((i, index) => (
                 <SidebarItem
                   key={index}
@@ -383,7 +402,7 @@ export default function Sidebar(props: SidebarProps) {
           )}
 
           {importedEnums.length > 0 && (
-            <SidebarSection name="Import Enums">
+            <SidebarSection name="Import Enums" slug="dependencies">
               {importedEnums.map((i, index) => (
                 <SidebarItem
                   key={index}
@@ -396,7 +415,7 @@ export default function Sidebar(props: SidebarProps) {
           )}
 
           {importedModules.length > 0 && (
-            <SidebarSection name="Import Modules">
+            <SidebarSection name="Import Modules" slug="dependencies">
               {importedModules.map((i, index) => (
                 <SidebarItem
                   key={index}
@@ -408,7 +427,11 @@ export default function Sidebar(props: SidebarProps) {
             </SidebarSection>
           )}
 
-          <SidebarSection name="Schema" onClick={() => navigate("schema")} />
+          <SidebarSection
+            name="Schema"
+            slug="schema"
+            onClick={() => navigate("schema")}
+          />
         </Stack>
       </Paper>
     </SidebarContainer>

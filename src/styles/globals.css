@@ -3,6 +3,11 @@ body {
   font-family: 'Colton Primary';
 }
 
+h1, h2, h3, h4, h5, h6 {
+  margin-block-start: 2.5rem;
+  margin-block-end: 0.5rem;
+}
+
 .sidebar::-webkit-scrollbar {
   width: 6px;
 }
