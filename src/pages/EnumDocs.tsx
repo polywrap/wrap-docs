@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import { UnfoldMore } from "@mui/icons-material";
 import { useParams, useNavigate } from "react-router-dom";
 import { ImportedEnumDefinition } from "@polywrap/wrap-manifest-types-js";
@@ -8,40 +7,8 @@ import ReferenceSection from "../components/ReferenceSection";
 import { getTypeNameRoute } from "../utils/getTypeNameRoute";
 import { getTypeRefRoutes } from "../utils/getTypeRefRoutes";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Title = styled.h1`
-  font-weight: 100;
-  font-stretch: expanded;
-`;
-
-const SectionTitle = styled.h3``;
-
-const SchemaLink = styled.span`
-  color: ${(props) => props.theme.colors.bg[50]};
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-`;
-
-const SchemaText = styled.h6`
-  color: ${(props) => props.theme.colors.bg[50]};
-  font-weight: 100;
-`;
-
-const Description = styled.h2`
-  font-weight: 100;
-  font-size: large;
-`;
+import { Box, useTheme } from "@mui/material";
+import { themes } from "../styles/palette";
 
 interface EnumDocsProps {
   import?: boolean;
@@ -53,6 +20,9 @@ function EnumDocs(props: EnumDocsProps) {
   const { manifest } = props;
 
   const { id } = useParams<"id">();
+
+  const theme = useTheme();
+  const { mode } = theme.palette;
 
   // Find the function
   const abi = manifest?.abi;
@@ -77,16 +47,58 @@ function EnumDocs(props: EnumDocsProps) {
 
   return (
     <>
-      <Header>
-        <Title>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Box
+          component="h1"
+          sx={{
+            fontWeight: 100,
+            fontStretch: "expanded",
+          }}
+        >
           Enum: <b>{enumDef.type}</b>
-        </Title>
-        <SchemaLink onClick={() => navigate("../schema")}>
-          <SchemaText>schema</SchemaText>
+        </Box>
+        <Box
+          component="span"
+          sx={{
+            color: themes[mode].bg[900],
+            display: "flex",
+            alignItems: "center",
+            ":hover": {
+              textDecoration: "underline",
+              cursor: "pointer",
+            },
+          }}
+          onClick={() => navigate("../schema")}
+        >
+          <Box
+            component="h6"
+            sx={{
+              fontWeight: 100,
+              fontSize: "large",
+            }}
+          >
+            schema
+          </Box>
           <UnfoldMore />
-        </SchemaLink>
-      </Header>
-      {enumDef?.comment && <Description>{enumDef.comment}</Description>}
+        </Box>
+      </Box>
+      {enumDef.comment && (
+        <Box
+          component="h2"
+          sx={{
+            fontWeight: 100,
+            fontSize: "large",
+          }}
+        >
+          {enumDef.comment}
+        </Box>
+      )}
       <RenderSchema
         enums={[enumDef]}
         onTypeNameClick={(name) => {
@@ -99,7 +111,7 @@ function EnumDocs(props: EnumDocsProps) {
       />
       {props.import && (
         <>
-          <SectionTitle>URI</SectionTitle>
+          <Box component="h3">URI</Box>
           {(enumDef as ImportedEnumDefinition).uri}
         </>
       )}

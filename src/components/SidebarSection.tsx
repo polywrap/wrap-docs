@@ -52,6 +52,32 @@ function SectionIcon({ type }: SidebarIconProps) {
 function SidebarSection(props: SidebarSectionProps) {
   const [open, setOpen] = React.useState(!!props.initOpen);
 
+  if (!props.children) {
+    return (
+      <Box>
+        <Stack
+          spacing={1}
+          direction="row"
+          onClick={props.onClick}
+          sx={{
+            alignItems: "center",
+            borderRadius: 1,
+            cursor: "pointer",
+            fontWeight: 600,
+            py: 1,
+            px: 2,
+            "&:hover": {
+              bgcolor: "fg.50",
+            },
+          }}
+        >
+          <SectionIcon type={props.slug} />
+          <Box>{props.name}</Box>
+        </Stack>
+      </Box>
+    );
+  }
+
   return (
     <Box>
       <Stack

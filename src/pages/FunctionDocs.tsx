@@ -1,13 +1,9 @@
-import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";
 import { Launch, UnfoldMore } from "@mui/icons-material";
 
 import RenderSchema from "../components/RenderSchema";
 import { getTypeNameRoute } from "../utils/getTypeNameRoute";
-import { Box, Grid, Link, Typography, alpha, useTheme } from "@mui/material";
-import FunctionSection from "../components/FunctionSection";
-import { themes } from "../styles/palette";
-import FunctionListing from "../components/FunctionListing";
+import { Box, useTheme } from "@mui/material";
 
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
 import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";

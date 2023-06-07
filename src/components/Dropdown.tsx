@@ -1,12 +1,7 @@
+import { Box } from "@mui/material";
 import { createContext, useCallback, useEffect, useRef, useState } from "react";
-import styled from "styled-components";
 
 import Button from "./Button";
-
-const DropdownContainer = styled.div`
-  position: relative;
-  display: inline-block;
-`;
 
 export interface DropdownProps {
   style?: React.CSSProperties;
@@ -56,7 +51,13 @@ function Dropdown(props: DropdownProps) {
 
   return (
     <DropdownContext.Provider value={{ setShowDropdown: setShowDropdown }}>
-      <DropdownContainer ref={dropdownRef}>
+      <Box
+        sx={{
+          position: "relative",
+          display: "inline-block",
+        }}
+        ref={dropdownRef}
+      >
         <Button
           style={props.style}
           onClick={() => setShowDropdown(!showDropdown)}
@@ -64,7 +65,7 @@ function Dropdown(props: DropdownProps) {
           {props.inner}
         </Button>
         {showDropdown && <>{props.children}</>}
-      </DropdownContainer>
+      </Box>
     </DropdownContext.Provider>
   );
 }

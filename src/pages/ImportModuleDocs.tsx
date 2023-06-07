@@ -1,44 +1,11 @@
-import styled from "styled-components";
 import { UnfoldMore } from "@mui/icons-material";
 import { useParams, useNavigate } from "react-router-dom";
 
 import RenderSchema from "../components/RenderSchema";
 import { getTypeNameRoute } from "../utils/getTypeNameRoute";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Title = styled.h1`
-  font-weight: 100;
-  font-stretch: expanded;
-`;
-
-const SchemaLink = styled.span`
-  color: ${(props) => props.theme.colors.bg[50]};
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-`;
-
-const SchemaText = styled.h6`
-  color: ${(props) => props.theme.colors.bg[50]};
-  font-weight: 100;
-`;
-
-const Description = styled.h2`
-  font-weight: 100;
-  font-size: large;
-`;
-
-const SectionTitle = styled.h3``;
+import { Box, useTheme } from "@mui/material";
+import { themes } from "../styles/palette";
 
 type ImportModuleDocsProps = {
   manifest: WrapManifest;
@@ -48,6 +15,9 @@ function ImportModuleDocs(props: ImportModuleDocsProps) {
   const navigate = useNavigate();
   const { manifest } = props;
   const { id } = useParams<"id">();
+
+  const theme = useTheme();
+  const { mode } = theme.palette;
 
   const abi = manifest?.abi;
 
@@ -69,18 +39,58 @@ function ImportModuleDocs(props: ImportModuleDocsProps) {
 
   return (
     <>
-      <Header>
-        <Title>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Box
+          component="h1"
+          sx={{
+            fontWeight: 100,
+            fontStretch: "expanded",
+          }}
+        >
           Module: <b>{module.type}</b>
-        </Title>
-        <SchemaLink
+        </Box>
+        <Box
+          component="span"
+          sx={{
+            color: themes[mode].bg[900],
+            display: "flex",
+            alignItems: "center",
+            ":hover": {
+              textDecoration: "underline",
+              cursor: "pointer",
+            },
+          }}
           onClick={() => navigate("../schema")}
         >
-          <SchemaText>schema</SchemaText>
+          <Box
+            component="h6"
+            sx={{
+              fontWeight: 100,
+              fontSize: "large",
+            }}
+          >
+            schema
+          </Box>
           <UnfoldMore />
-        </SchemaLink>
-      </Header>
-      {module?.comment && <Description>{module.comment}</Description>}
+        </Box>
+      </Box>
+      {module?.comment && (
+        <Box
+          component="h2"
+          sx={{
+            fontWeight: 100,
+            fontSize: "large",
+          }}
+        >
+          {module.comment}
+        </Box>
+      )}
       <RenderSchema
         importedModules={[module]}
         onTypeNameClick={(name) => {
@@ -91,8 +101,7 @@ function ImportModuleDocs(props: ImportModuleDocsProps) {
           }
         }}
       />
-      <SectionTitle>URI</SectionTitle>
-      {module.uri}
+      <Box component="h3">URI</Box> {module.uri}
     </>
   );
 }
