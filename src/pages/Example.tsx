@@ -5,6 +5,7 @@ import { DocsManifest } from "@polywrap/polywrap-manifest-types-js";
 import { ExampleStep } from "../types/Example";
 import ExampleRunner from "../components/ExampleRunner";
 import { useMemo } from "react";
+import { Stack } from "@mui/material";
 
 type ExampleProps = {
   examples: DocsManifest["examples"];
@@ -55,10 +56,15 @@ function Example(props: ExampleProps) {
   }
 
   return (
-    <>
+    <Stack
+      gap={4}
+      sx={{
+        pt: 4,
+      }}
+    >
       <div>{example.title}</div>
       <ExampleRunner {...{ client, steps, wrapUri }} />
-    </>
+    </Stack>
   );
 }
 

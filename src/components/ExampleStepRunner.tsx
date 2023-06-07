@@ -15,6 +15,8 @@ import MultiSelect from "./MultiSelect";
 import { getInvokeSnippet } from "../utils/getInvokeSnippet";
 import { InvokeLanguage, invokeLanguages } from "../utils/InvokeLanguage";
 import { ExampleStep } from "../types/Example";
+import { Box, Stack, useTheme } from "@mui/material";
+import { themes } from "../styles/palette";
 
 const Description = styled.div`
   margin-top: 1rem;
@@ -35,19 +37,6 @@ const Controls = styled.div`
   align-items: center;
 `;
 
-const SettingsMenu = styled.div`
-  position: absolute;
-  right: 0;
-  z-index: 1;
-  display: grid;
-  flex-direction: column;
-  background-color: ${(props) => props.theme.colors[900]};
-  border-radius: 5px;
-  padding: 5px;
-  margin: 5px 0px;
-  background-color: ${(props) => props.theme.colors[50]}3b;
-`;
-
 const RunArrow = styled(PlayArrow)`
   height: 15px !important;
   width: 15px !important;
@@ -61,14 +50,6 @@ const SnippetContainer = styled.div`
   width: auto;
 `;
 
-const SnippetText = styled.div`
-  max-height: 50vh;
-  font-size: 0.9rem;
-  overflow: auto;
-  border: 1px solid ${(props) => props.theme.colors[50]};
-  border-radius: 5px;
-`;
-
 const ResultTitle = styled.h3`
   font-weight: 400;
   text-align: left;
@@ -79,16 +60,6 @@ const ResultContainer = styled.div`
   display: flex;
   margin: auto;
   width: 100%;
-`;
-
-const ResultText = styled.div`
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  max-height: 50vh;
-  font-size: 0.9rem;
-  overflow: auto;
-  border: 1px solid ${(props) => props.theme.colors[50]};
-  border-radius: 5px;
 `;
 
 const ErrorContainer = styled.div`
@@ -110,22 +81,6 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-`;
-
-const DocsLink = styled.span`
-  color: ${(props) => props.theme.colors[50]};
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-`;
-
-const DocsText = styled.h6`
-  color: ${(props) => props.theme.colors[50]};
-  font-weight: 100;
 `;
 
 const DropdownWithDocsLink = styled.div`
@@ -176,6 +131,8 @@ function ExampleStepRunner(props: {
     setWaiting(false);
     onResult && onResult(invokeResult);
   };
+  const theme = useTheme();
+  const { mode } = theme.palette;
 
   const toggleStyle: React.CSSProperties = {
     height: "32px",
@@ -185,7 +142,7 @@ function ExampleStepRunner(props: {
   };
 
   return (
-    <>
+    <Stack gap={2}>
       <Header></Header>
       <Description>{description}</Description>
       <SnippetContainer>
@@ -218,7 +175,18 @@ function ExampleStepRunner(props: {
           </Button>
           <DropdownWithDocsLink>
             <Dropdown inner={<Settings />}>
-              <SettingsMenu>
+              <Box
+                sx={{
+                  position: "absolute",
+                  right: 0,
+                  zIndex: 1,
+                  display: "grid",
+                  backgroundColor: themes[mode].bg[900],
+                  borderRadius: "5px",
+                  padding: "5px",
+                  margin: "5px 0px",
+                }}
+              >
                 <Toggle
                   style={toggleStyle}
                   position={"right"}
@@ -243,15 +211,43 @@ function ExampleStepRunner(props: {
                   }
                   position={"right"}
                 />
-              </SettingsMenu>
+              </Box>
             </Dropdown>
-            <DocsLink onClick={() => navigate("/function/" + method)}>
-              <DocsText>docs</DocsText>
+            <Box
+              component="span"
+              sx={{
+                color: themes[mode].fg[900],
+                display: "flex",
+                alignItems: "center",
+                ":hover": {
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                },
+              }}
+              onClick={() => navigate("/function/" + method)}
+            >
+              <Box
+                component="span"
+                sx={{
+                  color: themes[mode].fg[50],
+                  fontWeight: 100,
+                }}
+              >
+                docs
+              </Box>
               <ManageSearch />
-            </DocsLink>
+            </Box>
           </DropdownWithDocsLink>
         </Controls>
-        <SnippetText>
+        <Box
+          sx={{
+            maxHeight: "50vh",
+            fontSize: "0.9rem",
+            overflow: "auto",
+            border: `1px solid ${themes[mode].fg[50]}`,
+            borderRadius: "5px",
+          }}
+        >
           <SyntaxHighlighter
             showLineNumbers={false}
             language={selectedLanguage.toLowerCase()}
@@ -259,7 +255,7 @@ function ExampleStepRunner(props: {
           >
             {invokeSnippet}
           </SyntaxHighlighter>
-        </SnippetText>
+        </Box>
       </SnippetContainer>
       {(waiting || result !== undefined) && (
         <>
@@ -272,7 +268,15 @@ function ExampleStepRunner(props: {
             <>
               <ResultTitle>Result</ResultTitle>
               <ResultContainer>
-                <ResultText>
+                <Box
+                  sx={{
+                    maxHeight: "50vh",
+                    fontSize: "0.9rem",
+                    overflow: "auto",
+                    border: `1px solid ${themes[mode].fg[50]}`,
+                    borderRadius: "5px",
+                  }}
+                >
                   <SyntaxHighlighter
                     showLineNumbers={false}
                     language="json"
@@ -283,7 +287,7 @@ function ExampleStepRunner(props: {
                       "$1:"
                     )}
                   </SyntaxHighlighter>
-                </ResultText>
+                </Box>
               </ResultContainer>
             </>
           ) : (
@@ -307,7 +311,7 @@ function ExampleStepRunner(props: {
           )}
         </>
       )}
-    </>
+    </Stack>
   );
 }
 

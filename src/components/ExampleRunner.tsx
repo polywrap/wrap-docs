@@ -8,6 +8,7 @@ import {
   replaceWrapUriToken,
   resolveStepResultReferenceValues,
 } from "../utils/exampleRunnerUtils";
+import { Stack } from "@mui/material";
 
 type ExampleStepWithResult = {
   step: ExampleStep;
@@ -86,7 +87,7 @@ function ExampleRunner(props: {
   };
 
   return (
-    <>
+    <Stack gap={4}>
       {exampleStepsWithResults.map((ewr, ewrIndex) => (
         <ExampleStepRunner
           key={ewrIndex}
@@ -97,7 +98,7 @@ function ExampleRunner(props: {
           }}
         />
       ))}
-    </>
+    </Stack>
   );
 }
 
