@@ -1,28 +1,32 @@
 import { DarkModeOutlined, SearchOutlined } from "@mui/icons-material";
-import { Input, Link, Stack, Typography } from "@mui/material";
+import { Input, Link, Stack, Typography, useTheme } from "@mui/material";
+import { themes } from "../styles/palette";
 
 export const HEADER_HEIGHT = 80;
 
 export default function Header() {
+  const theme = useTheme();
+  const { mode } = theme.palette;
+
   return (
     <Stack
       direction="row"
       component="header"
       sx={{
         alignItems: "center",
+        justifyContent: "flex-end",
         backgroundColor: "bg.1000",
         borderBottom: `1px solid`,
         borderBottomColor: "fg.100",
         color: "fg.900",
         height: HEADER_HEIGHT,
-        justifyContent: "space-between",
         px: 3,
         position: "sticky",
         top: 0,
         zIndex: 1,
       }}
     >
-      <Input
+      {/* <Input
         disableUnderline
         startAdornment={
           <SearchOutlined
@@ -45,7 +49,7 @@ export default function Header() {
           maxWidth: 350,
           width: "100%",
         }}
-      />
+      /> */}
       <Stack
         direction="row"
         spacing={3}
@@ -53,10 +57,21 @@ export default function Header() {
           alignItems: "center",
         }}
       >
-        <Link>docs</Link>
-        <Link>support</Link>
-        <Link>
-          <DarkModeOutlined />
+        <Link
+          sx={{
+            color: themes[mode].fg[900],
+          }}
+          href="https://docs.polywrap.io"
+        >
+          Docs
+        </Link>
+        <Link
+          sx={{
+            color: themes[mode].fg[900],
+          }}
+          href="https://discord.polywrap.io"
+        >
+          Support
         </Link>
       </Stack>
     </Stack>

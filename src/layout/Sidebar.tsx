@@ -57,6 +57,7 @@ const SidebarItem = ({ children, ...props }: BoxProps) => (
       paddingTop: "5px",
       paddingLeft: "5px",
       paddingRight: "5px",
+      wordWrap: "break-word",
       "&:hover": {
         bgcolor: "fg.50",
       },
@@ -86,7 +87,7 @@ export default function Sidebar(props: SidebarProps) {
   const theme = useTheme();
   const { mode } = theme.palette;
   const navigate = useNavigate();
-  const { manifest, wrapUri } = props;
+  const { manifest, wrapUri, docsManifest } = props;
   const client = usePolywrapClient();
 
   const abi = manifest?.abi;
@@ -106,8 +107,8 @@ export default function Sidebar(props: SidebarProps) {
   // Wrap logo
   const [wrapLogoUrl, setWrapLogoUrl] = useState(defaultWrapLogo);
   useEffect(() => {
-    if (props.docsManifest?.logo) {
-      const logoPath = props.docsManifest.logo;
+    if (docsManifest?.logo) {
+      const logoPath = docsManifest.logo;
       const exec = async () => {
         const logoResult = await client.getFile(wrapUri, {
           path: `docs/${logoPath}`,
@@ -122,13 +123,13 @@ export default function Sidebar(props: SidebarProps) {
     } else {
       setWrapLogoUrl(defaultWrapLogo);
     }
-  }, [props.docsManifest?.logo, client, wrapUri]);
+  }, [docsManifest?.logo, client, wrapUri]);
 
-  if (props.docsManifest?.pages) {
-    for (const pageSlug in props.docsManifest.pages) {
+  if (docsManifest?.pages) {
+    for (const pageSlug in docsManifest.pages) {
       wrapHasReadmePages = true;
 
-      const page = props.docsManifest.pages[pageSlug];
+      const page = docsManifest.pages[pageSlug];
 
       readmes.push({
         path: pageSlug,
@@ -137,11 +138,11 @@ export default function Sidebar(props: SidebarProps) {
     }
   }
 
-  if (props.docsManifest?.examples) {
-    for (const exampleSlug in props.docsManifest.examples) {
+  if (docsManifest?.examples) {
+    for (const exampleSlug in docsManifest.examples) {
       wrapHasExamples = true;
 
-      const example = props.docsManifest.examples[exampleSlug];
+      const example = docsManifest.examples[exampleSlug];
 
       examples.push({
         path: exampleSlug,
@@ -203,45 +204,46 @@ export default function Sidebar(props: SidebarProps) {
                 lineHeight: 1,
                 fontWeight: 600,
                 fontFamily: "Colton Display",
-                fontStretch: "expanded",
                 fontSize: "1.375rem",
                 margin: 0,
                 cursor: "pointer",
               }}
             >
-              {manifest.name}
+              {docsManifest?.title ?? manifest.name}
             </Typography>
-            <Link
-              href={"uniswap.org"}
-              target="_blank"
-              rel="noredirect"
-              underline="none"
-            >
-              <Stack
-                direction="row"
-                spacing={1}
-                sx={{
-                  alignItems: "center",
-                  color: "fg.500",
-                  fontWeight: "100",
-                  fontSize: "10px",
-                  "&:hover": {
-                    color: "fg.1000",
-                  },
-                }}
+            {docsManifest?.website && docsManifest?.website.length && (
+              <Link
+                href={docsManifest.website}
+                target="_blank"
+                rel="noredirect"
+                underline="none"
               >
-                <Typography
+                <Stack
+                  direction="row"
+                  spacing={1}
                   sx={{
-                    fontSize: 12,
-                    lineHeight: 1,
-                    transform: "translateY(-5%)",
+                    alignItems: "center",
+                    color: "fg.500",
+                    fontWeight: "100",
+                    fontSize: "10px",
+                    "&:hover": {
+                      color: "fg.1000",
+                    },
                   }}
                 >
-                  {"uniswap.org"}
-                </Typography>
-                <OpenInNew sx={{ width: 12, height: 12 }} />
-              </Stack>
-            </Link>
+                  <Typography
+                    sx={{
+                      fontSize: 12,
+                      lineHeight: 1,
+                      transform: "translateY(-5%)",
+                    }}
+                  >
+                    {docsManifest.website}
+                  </Typography>
+                  <OpenInNew sx={{ width: 12, height: 12 }} />
+                </Stack>
+              </Link>
+            )}
           </Stack>
         </Stack>
 

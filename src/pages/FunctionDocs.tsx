@@ -62,7 +62,8 @@ function FunctionDocs(props: FunctionDocsProps) {
   return (
     <Stack
       sx={{
-        paddingTop: 4,
+        pt: 4,
+        pb: 4
       }}
       gap={4}
     >
@@ -86,8 +87,8 @@ function FunctionDocs(props: FunctionDocsProps) {
             alignItems: "center",
             cursor: "pointer",
             ":hover": {
-              textDecoration: "underline"
-            }
+              textDecoration: "underline",
+            },
           }}
           onClick={() => navigate("../schema")}
         >
@@ -96,14 +97,16 @@ function FunctionDocs(props: FunctionDocsProps) {
         </Stack>
       </Stack>
 
-      <Box
-        sx={{
-          fontWeight: 100,
-          fontSize: "large",
-        }}
-      >
-        {method.comment}
-      </Box>
+      {method.comment && method.comment.length && (
+        <Box
+          sx={{
+            fontWeight: 100,
+            fontSize: "large",
+          }}
+        >
+          {method.comment}
+        </Box>
+      )}
 
       <RenderSchema
         methods={[method]}

@@ -101,7 +101,7 @@ const PolywrapLogo = ({
             fontSize: "1rem",
           }}
         >
-          docs.wraps.eth
+          Wrap Docs
         </Typography>
         <Typography
           variant="h3"

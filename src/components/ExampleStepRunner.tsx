@@ -42,14 +42,6 @@ const RunArrow = styled(PlayArrow)`
   width: 15px !important;
 `;
 
-const SnippetContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  border-radius: 0.25rem;
-  width: auto;
-`;
-
 const ResultTitle = styled.h3`
   font-weight: 400;
   text-align: left;
@@ -142,10 +134,9 @@ function ExampleStepRunner(props: {
   };
 
   return (
-    <Stack gap={2}>
-      <Header></Header>
+    <Stack gap={2} alignItems="stretch">
       <Description>{description}</Description>
-      <SnippetContainer>
+      <Stack gap={1}>
         <Controls>
           <Button
             style={{
@@ -174,7 +165,9 @@ function ExampleStepRunner(props: {
             )}
           </Button>
           <DropdownWithDocsLink>
-            <Dropdown inner={<Settings />}>
+            <Dropdown inner={<Settings />} style={{
+              padding: 1,
+            }}>
               <Box
                 sx={{
                   position: "absolute",
@@ -224,12 +217,12 @@ function ExampleStepRunner(props: {
                   cursor: "pointer",
                 },
               }}
-              onClick={() => navigate("/function/" + method)}
+              onClick={() => navigate("../function/" + method)}
             >
               <Box
                 component="span"
                 sx={{
-                  color: themes[mode].fg[50],
+                  color: themes[mode].fg[900],
                   fontWeight: 100,
                 }}
               >
@@ -244,7 +237,7 @@ function ExampleStepRunner(props: {
             maxHeight: "50vh",
             fontSize: "0.9rem",
             overflow: "auto",
-            border: `1px solid ${themes[mode].fg[50]}`,
+            border: `1px solid ${themes[mode].fg[900]}`,
             borderRadius: "5px",
           }}
         >
@@ -256,7 +249,7 @@ function ExampleStepRunner(props: {
             {invokeSnippet}
           </SyntaxHighlighter>
         </Box>
-      </SnippetContainer>
+      </Stack>
       {(waiting || result !== undefined) && (
         <>
           {waiting ? (

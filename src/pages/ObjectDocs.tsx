@@ -50,6 +50,7 @@ function ObjectDocs(props: ObjectDocsProps) {
       gap={4}
       sx={{
         pt: 4,
+        pb: 4,
       }}
     >
       <Stack
@@ -57,6 +58,7 @@ function ObjectDocs(props: ObjectDocsProps) {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
+          gap: 2
         }}
       >
         <Box
@@ -64,6 +66,7 @@ function ObjectDocs(props: ObjectDocsProps) {
           sx={{
             mt: 0,
             mb: 0,
+            wordBreak: "break-word",
           }}
         >
           Object: <b>{object.type}</b>
@@ -71,7 +74,7 @@ function ObjectDocs(props: ObjectDocsProps) {
         <Box
           component="span"
           sx={{
-            color: themes[mode].fg[50],
+            color: themes[mode].fg[900],
             display: "flex",
             alignItems: "center",
             ":hover": {
@@ -82,18 +85,24 @@ function ObjectDocs(props: ObjectDocsProps) {
           onClick={() => navigate("../schema")}
         >
           <span>schema</span>
-          <UnfoldMore />
+          <UnfoldMore
+            sx={{
+              color: themes[mode].fg[900],
+            }}
+          />
         </Box>
       </Stack>
 
-      <Box
-        sx={{
-          fontWeight: 100,
-          fontSize: "large",
-        }}
-      >
-        {object.comment}
-      </Box>
+      {object.comment && object.comment.length && (
+        <Box
+          sx={{
+            fontWeight: 100,
+            fontSize: "large",
+          }}
+        >
+          {object.comment}
+        </Box>
+      )}
 
       <RenderSchema
         objects={[object]}

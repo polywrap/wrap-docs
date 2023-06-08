@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import RenderSchema from "../components/RenderSchema";
 import { getTypeNameRoute } from "../utils/getTypeNameRoute";
 import { WrapManifest } from "@polywrap/wrap-manifest-types-js";
-import { Box, useTheme } from "@mui/material";
+import { Box, Stack, useTheme } from "@mui/material";
 import { themes } from "../styles/palette";
 
 type ImportModuleDocsProps = {
@@ -38,7 +38,13 @@ function ImportModuleDocs(props: ImportModuleDocsProps) {
   }
 
   return (
-    <>
+    <Stack
+      sx={{
+        paddingBottom: 4,
+        paddingTop: 4,
+        gap: 4
+      }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -49,6 +55,8 @@ function ImportModuleDocs(props: ImportModuleDocsProps) {
         <Box
           component="h1"
           sx={{
+            marginTop: 0,
+            marginBottom: 0,
             fontWeight: 100,
             fontStretch: "expanded",
           }}
@@ -58,7 +66,7 @@ function ImportModuleDocs(props: ImportModuleDocsProps) {
         <Box
           component="span"
           sx={{
-            color: themes[mode].bg[900],
+            color: themes[mode].fg[900],
             display: "flex",
             alignItems: "center",
             ":hover": {
@@ -68,16 +76,12 @@ function ImportModuleDocs(props: ImportModuleDocsProps) {
           }}
           onClick={() => navigate("../schema")}
         >
-          <Box
-            component="h6"
+          <span>schema</span>
+          <UnfoldMore
             sx={{
-              fontWeight: 100,
-              fontSize: "large",
+              color: themes[mode].fg[900],
             }}
-          >
-            schema
-          </Box>
-          <UnfoldMore />
+          />
         </Box>
       </Box>
       {module?.comment && (
@@ -101,8 +105,11 @@ function ImportModuleDocs(props: ImportModuleDocsProps) {
           }
         }}
       />
-      <Box component="h3">URI</Box> {module.uri}
-    </>
+      <Box component="h3" sx={{
+        mt: 0,
+        mb: 0
+      }}>URI</Box> {module.uri}
+    </Stack>
   );
 }
 
